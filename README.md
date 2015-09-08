@@ -9,7 +9,7 @@
 - (void)audioStartClick
 {
     // 1 停止播放录音
-    [[AudioHelper shareManager] audioPlayerStop];
+    [[AudioHelper shareManager] stopAudio];
     
     // 2 录音
     // 录音文件名称 根据时间来命名以保证每次录音文件名不重复
@@ -44,10 +44,10 @@
 {
 //    // 播放本地音乐
 //    NSString *path = [[NSBundle mainBundle] pathForResource:@"hongri" ofType:@"mp3"];
-//    [[AudioHelper shareManager] audioPlay:path];
+//    [[AudioHelper shareManager] playAudio:path];
 
     // 播放录音
-    [[AudioHelper shareManager] audioRecorderPlay:self.musicPath];
+    [[AudioHelper shareManager] playAudioRecorder:self.musicPath];
 }
 
 ~~~

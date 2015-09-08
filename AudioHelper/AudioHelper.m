@@ -2,7 +2,7 @@
 //  AudioHelper.m
 //  DemoVideo
 //
-//  Created by zhangshaoyu on 15/9/7.
+//  Created by zhangshaoyu on 13/11/7.
 //  Copyright (c) 2015年 zhangshaoyu. All rights reserved.
 //
 
@@ -275,7 +275,7 @@
 #pragma mark - 音频播放
 
 // 录音播放或停止
-- (void)audioRecorderPlay:(NSString *)filePath
+- (void)playAudioRecorder:(NSString *)filePath
 {
     if (self.audioPlayer)
     {
@@ -296,23 +296,23 @@
             else
             {
                 self.audioPlayer = nil;
-                [self audioPlayerPlay:filePath];
+                [self playAudioWithFile:filePath];
             }
         }
         else
         {
-            [self audioPlayerStop];
-            [self audioPlayerPlay:filePath];
+            [self stopAudio];
+            [self playAudioWithFile:filePath];
         }
     }
     else
     {
-        [self audioPlayerPlay:filePath];
+        [self playAudioWithFile:filePath];
     }
 }
 
 // 音频播放或停止
-- (void)audioPlay:(NSString *)filePath;
+- (void)playAudio:(NSString *)filePath;
 {
     if (self.audioPlayer)
     {
@@ -333,23 +333,23 @@
             else
             {
                 self.audioPlayer = nil;
-                [self audioPlayerPlay:filePath];
+                [self playAudioWithFile:filePath];
             }
         }
         else
         {
-            [self audioPlayerStop];
-            [self audioPlayerPlay:filePath];
+            [self stopAudio];
+            [self playAudioWithFile:filePath];
         }
     }
     else
     {
-        [self audioPlayerPlay:filePath];
+        [self playAudioWithFile:filePath];
     }
 }
 
 // 播放录音
-- (void)audioPlayerPlay:(NSString *)filePath
+- (void)playAudioWithFile:(NSString *)filePath
 {
     // 判断将要播放文件是否存在
     if (![[NSFileManager defaultManager] fileExistsAtPath:filePath])
@@ -374,7 +374,7 @@
 }
 
 // 停止播放
-- (void)audioPlayerStop
+- (void)stopAudio
 {
     if (self.audioPlayer)
     {
