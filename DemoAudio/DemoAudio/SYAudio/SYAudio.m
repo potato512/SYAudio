@@ -15,10 +15,10 @@
 
 @interface SYAudio () <AVAudioRecorderDelegate>
 
-@property (nonatomic, strong) NSMutableDictionary *audioRecorderSetting; // 录音设置
+@property (nonatomic, strong) NSMutableDictionary *audioRecorderDict;    // 录音设置
 @property (nonatomic, strong) AVAudioRecorder *audioRecorder;            // 录音
 @property (nonatomic, strong) AVAudioPlayer *audioPlayer;                // 播放
-@property (nonatomic, assign) double audioRecorderTime;                  // 录音时长
+@property (nonatomic, assign) NSTimeInterval audioRecorderTime;          // 录音时长
 @property (nonatomic, strong) UIView *imgView;                           // 录音音量图像父视图
 @property (nonatomic, strong) UIImageView *audioRecorderVoiceImgView;    // 录音音量图像
 @property (nonatomic, strong) NSTimer *audioRecorderTimer;               // 录音音量计时器
@@ -28,18 +28,6 @@
 @implementation SYAudio
 
 #pragma mark - 初始化
-
-- (id)init
-{
-    self = [super init];
-    
-    if (self)
-    {
-
-    }
-    
-    return self;
-}
 
 // 录音
 + (SYAudio *)shareAudio
@@ -53,20 +41,28 @@
     return staticAudio;
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    if (self)
+    {
+
+    }
+    
+    return self;
+}
+
 // 内存释放
 - (void)dealloc
 {
     // 内存释放前先停止录音，或音频播放
     [self audioStop];
     [self audioRecorderStop];
+    [self timerStop];
     
-    if (self.audioRecorderTimer)
+    if (self.audioRecorderDict)
     {
-        [self.audioRecorderTimer invalidate];
-    }
-    if (self.audioRecorderSetting)
-    {
-        self.audioRecorderSetting = nil;
+        self.audioRecorderDict = nil;
     }
     if (self.audioRecorder)
     {
@@ -86,21 +82,21 @@
     }
 }
 
-#pragma mark - setter
+#pragma mark - getter
 
-- (NSMutableDictionary *)audioRecorderSetting
+- (NSMutableDictionary *)audioRecorderDict
 {
-    if (!_audioRecorderSetting)
+    if (!_audioRecorderDict)
     {
         // 参数设置 格式、采样率、录音通道、线性采样位数、录音质量
-        _audioRecorderSetting = [NSMutableDictionary dictionary];
-        [_audioRecorderSetting setValue:[NSNumber numberWithInt:kAudioFormatMPEG4AAC] forKey:AVFormatIDKey];
-        [_audioRecorderSetting setValue:[NSNumber numberWithInt:11025] forKey:AVSampleRateKey];
-        [_audioRecorderSetting setValue:[NSNumber numberWithInt:2] forKey:AVNumberOfChannelsKey];
-        [_audioRecorderSetting setValue:[NSNumber numberWithInt:16] forKey:AVLinearPCMBitDepthKey];
-        [_audioRecorderSetting setValue:[NSNumber numberWithInt:AVAudioQualityHigh] forKey:AVEncoderAudioQualityKey];
+        _audioRecorderDict = [NSMutableDictionary dictionary];
+        [_audioRecorderDict setValue:[NSNumber numberWithInt:kAudioFormatMPEG4AAC] forKey:AVFormatIDKey];
+        [_audioRecorderDict setValue:[NSNumber numberWithInt:11025] forKey:AVSampleRateKey];
+        [_audioRecorderDict setValue:[NSNumber numberWithInt:2] forKey:AVNumberOfChannelsKey];
+        [_audioRecorderDict setValue:[NSNumber numberWithInt:16] forKey:AVLinearPCMBitDepthKey];
+        [_audioRecorderDict setValue:[NSNumber numberWithInt:AVAudioQualityHigh] forKey:AVEncoderAudioQualityKey];
     }
-    return _audioRecorderSetting;
+    return _audioRecorderDict;
 }
 
 #pragma mark - 音频处理-录音
@@ -110,7 +106,7 @@
 {
     // 生成录音文件
     NSURL *urlAudioRecorder = [NSURL fileURLWithPath:filePath];
-    self.audioRecorder = [[AVAudioRecorder alloc] initWithURL:urlAudioRecorder settings:self.audioRecorderSetting error:nil];
+    self.audioRecorder = [[AVAudioRecorder alloc] initWithURL:urlAudioRecorder settings:self.audioRecorderDict error:nil];
     
     // 开启音量检测
     [self.audioRecorder setMeteringEnabled:YES];
@@ -143,79 +139,8 @@
             [self.audioRecorderVoiceImgView setBackgroundColor:[UIColor clearColor]];
             
             // 设置定时检测
-            self.audioRecorderTimer = [NSTimer scheduledTimerWithTimeInterval:0 target:self selector:@selector(detectionVoice) userInfo:nil repeats:YES];
+            [self timerStart];
         }
-    }
-}
-
-/// 录音音量显示
-- (void)detectionVoice
-{
-    // 刷新音量数据
-    [self.audioRecorder updateMeters];
-    
-    //    // 获取音量的平均值
-    //    [self.audioRecorder averagePowerForChannel:0];
-    //    // 音量的最大值
-    //    [self.audioRecorder peakPowerForChannel:0];
-    
-    double lowPassResults = pow(10, (0.05 * [self.audioRecorder peakPowerForChannel:0]));
-    
-    if (0 < lowPassResults <= 0.06)
-    {
-        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_01.png"]];
-    }
-    else if (0.06 < lowPassResults <= 0.13)
-    {
-        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_02.png"]];
-    }
-    else if (0.13 < lowPassResults <= 0.20)
-    {
-        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_03.png"]];
-    }
-    else if (0.20 < lowPassResults <= 0.27)
-    {
-        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_04.png"]];
-    }
-    else if (0.27 < lowPassResults <= 0.34)
-    {
-        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_05.png"]];
-    }
-    else if (0.34 < lowPassResults <= 0.41)
-    {
-        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_06.png"]];
-    }
-    else if (0.41 < lowPassResults <= 0.48)
-    {
-        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_07.png"]];
-    }
-    else if (0.48 < lowPassResults <= 0.55)
-    {
-        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_08.png"]];
-    }
-    else if (0.55 < lowPassResults <= 0.62)
-    {
-        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_09.png"]];
-    }
-    else if (0.62 < lowPassResults <= 0.69)
-    {
-        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_10.png"]];
-    }
-    else if (0.69 < lowPassResults <= 0.76)
-    {
-        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_11.png"]];
-    }
-    else if (0.76 < lowPassResults <= 0.83)
-    {
-        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_12.png"]];
-    }
-    else if (0.83 < lowPassResults <= 0.9)
-    {
-        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_13.png"]];
-    }
-    else
-    {
-        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_14.png"]];
     }
 }
 
@@ -248,8 +173,7 @@
     }
     
     // 释放计时器
-    [self.audioRecorderTimer invalidate];
-    self.audioRecorderTimer = nil;
+    [self timerStop];
 }
 
 /// 录音时长
@@ -280,21 +204,21 @@
          
          if ([currentName isEqualToString:nextName])
          {
-         if ([self.audioPlayer isPlaying])
-         {
-         [self.audioPlayer stop];
-         self.audioPlayer = nil;
+             if ([self.audioPlayer isPlaying])
+             {
+                 [self.audioPlayer stop];
+                 self.audioPlayer = nil;
+             }
+             else
+             {
+                 self.audioPlayer = nil;
+                 [self audioPlayerPlay:filePath];
+             }
          }
          else
          {
-         self.audioPlayer = nil;
-         [self audioPlayerPlay:filePath];
-         }
-         }
-         else
-         {
-         [self audioPlayerStop];
-         [self audioPlayerPlay:filePath];
+             [self audioPlayerStop];
+             [self audioPlayerPlay:filePath];
          }
          */
         
@@ -370,6 +294,100 @@
         }
         
         self.audioPlayer = nil;
+    }
+}
+
+#pragma mark - timer
+
+- (void)timerStart
+{
+    if (self.audioRecorderTimer == nil)
+    {
+        // 设置定时检测
+        self.audioRecorderTimer = SYAudioTimerInitialize(0.0, nil, YES, self, @selector(detectionVoice));
+    }
+    
+    SYAudioTimerStart(self.audioRecorderTimer);
+}
+
+- (void)timerStop
+{
+    if (self.audioRecorderTimer)
+    {
+        SYAudioTimerStop(self.audioRecorderTimer);
+        SYAudioTimerKill(self.audioRecorderTimer);
+    }
+}
+
+
+/// 录音音量显示
+- (void)detectionVoice
+{
+    // 刷新音量数据
+    [self.audioRecorder updateMeters];
+    
+//    // 获取音量的平均值
+//    [self.audioRecorder averagePowerForChannel:0];
+//    // 音量的最大值
+//    [self.audioRecorder peakPowerForChannel:0];
+    
+    double lowPassResults = pow(10, (0.05 * [self.audioRecorder peakPowerForChannel:0]));
+    
+    if (0 < lowPassResults <= 0.06)
+    {
+        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_01.png"]];
+    }
+    else if (0.06 < lowPassResults <= 0.13)
+    {
+        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_02.png"]];
+    }
+    else if (0.13 < lowPassResults <= 0.20)
+    {
+        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_03.png"]];
+    }
+    else if (0.20 < lowPassResults <= 0.27)
+    {
+        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_04.png"]];
+    }
+    else if (0.27 < lowPassResults <= 0.34)
+    {
+        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_05.png"]];
+    }
+    else if (0.34 < lowPassResults <= 0.41)
+    {
+        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_06.png"]];
+    }
+    else if (0.41 < lowPassResults <= 0.48)
+    {
+        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_07.png"]];
+    }
+    else if (0.48 < lowPassResults <= 0.55)
+    {
+        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_08.png"]];
+    }
+    else if (0.55 < lowPassResults <= 0.62)
+    {
+        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_09.png"]];
+    }
+    else if (0.62 < lowPassResults <= 0.69)
+    {
+        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_10.png"]];
+    }
+    else if (0.69 < lowPassResults <= 0.76)
+    {
+        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_11.png"]];
+    }
+    else if (0.76 < lowPassResults <= 0.83)
+    {
+        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_12.png"]];
+    }
+    else if (0.83 < lowPassResults <= 0.9)
+    {
+        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_13.png"]];
+    }
+    else
+    {
+        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_14.png"]];
     }
 }
 

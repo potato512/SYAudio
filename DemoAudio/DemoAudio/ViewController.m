@@ -8,6 +8,7 @@
 
 #import "ViewController.h"
 #import "SYAudio.h"
+#import "LocalViewController.h"
 
 @interface ViewController () <UITableViewDataSource, UITableViewDelegate>
 
@@ -26,11 +27,12 @@
     
     self.navigationItem.title = @"录音及播放音频";
     
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"clear" style:UIBarButtonItemStyleDone target:self action:@selector(clearItemClick:)];
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"local" style:UIBarButtonItemStyleDone target:self action:@selector(localItemClick:)];
     
+    UIBarButtonItem *clearItem = [[UIBarButtonItem alloc] initWithTitle:@"clear" style:UIBarButtonItemStyleDone target:self action:@selector(clearItemClick:)];
     UIBarButtonItem *stopItem = [[UIBarButtonItem alloc] initWithTitle:@"stop" style:UIBarButtonItemStyleDone target:self action:@selector(stopItemClick:)];
     UIBarButtonItem *playItem = [[UIBarButtonItem alloc] initWithTitle:@"play" style:UIBarButtonItemStyleDone target:self action:@selector(playItemClick:)];
-    self.navigationItem.rightBarButtonItems = @[stopItem, playItem];
+    self.navigationItem.rightBarButtonItems = @[clearItem, stopItem, playItem];
     
     [self setUI];
 }
@@ -88,6 +90,12 @@
 
 #pragma mark - 交互 
 
+- (void)localItemClick:(UIBarButtonItem *)item
+{
+    LocalViewController *nextVC = [[LocalViewController alloc] init];
+    [self.navigationController pushViewController:nextVC animated:YES];
+}
+
 - (void)clearItemClick:(UIBarButtonItem *)item
 {
     if (self.mainArray)
@@ -129,6 +137,7 @@
     [self saveRecorder];
 }
 
+#pragma mark - 音频处理方法
 
 // 开始录音
 - (void)startRecorder

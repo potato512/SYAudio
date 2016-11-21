@@ -4,10 +4,11 @@
 //
 //  Created by zhangshaoyu on 13/11/7.
 //  Copyright (c) 2015年 zhangshaoyu. All rights reserved.
-//  功能描述 封装声音录制与播放
+//  音频录制与播放
 
 #import <Foundation/Foundation.h>
 #import "SYAudioFile.h"
+#import "SYAudioTimer.h"
 
 @interface SYAudio : NSObject
 

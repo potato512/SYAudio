@@ -17,7 +17,7 @@
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"YYYYMMddHHmmss"];
     NSString *filePath = [dateFormatter stringFromDate:currentDate];
-    //
+    // 文件名称
     filePath = [NSString stringWithFormat:@"%@.aac", filePath];
     
     NSString *tmpPath = [NSHomeDirectory() stringByAppendingPathComponent:@"tmp"];
