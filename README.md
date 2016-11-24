@@ -2,6 +2,10 @@
 使用AVAudioRecorder进行录音
 使用AVAudioPlayer进行音频播放
 
+#效果图
+![audioImage.gif](./audioImage.gif)
+
+
 #注意：
  * 添加AVFoundation.framework、AudioToolbox.framework
  * 音频处理包括：开始录音、停止录音、播放音频、停止音频播放
