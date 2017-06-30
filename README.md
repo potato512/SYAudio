@@ -9,6 +9,7 @@
 
 >
 > 注意：
+>
 > 1 添加AVFoundation.framework、AudioToolbox.framework
 >
 > 2 音频处理包括：开始录音、停止录音、播放音频、停止音频播放
