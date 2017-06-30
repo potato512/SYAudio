@@ -196,7 +196,8 @@
         // 判断当前与下一个是否相同
         // 相同时，点击时要么播放，要么停止
         // 不相同时，点击时停止播放当前的，开始播放下一个
-        NSString *currentStr = [self.audioPlayer.url relativeString];
+        NSString *pathPrevious = [self.audioPlayer.url relativeString];
+        pathPrevious = [pathPrevious stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
         
         /*
          NSString *currentName = [self getFileNameAndType:currentStr];
@@ -223,7 +224,7 @@
          */
         
         // currentStr包含字符"file://location/"，通过判断filePath是否为currentPath的子串，是则相同，否则不同
-        NSRange range = [currentStr rangeOfString:filePath];
+        NSRange range = [pathPrevious rangeOfString:filePath];
         if (range.location != NSNotFound)
         {
             if ([self.audioPlayer isPlaying])
