@@ -6,16 +6,25 @@
 # 效果图
 ![audioImage.gif](./audioImage.gif)
 
+
 >
 > 注意：
 > 1 添加AVFoundation.framework、AudioToolbox.framework
+>
 > 2 音频处理包括：开始录音、停止录音、播放音频、停止音频播放
+>
 > 3 音频处理是通过按钮进行交互，通常采用三种状态交互方式
+>
 > (1) UIControlEventTouchDown状态时，开始录音
+>
 > (2) UIControlEventTouchUpInside状态时，停止录音，并进行类似音频文件存储的操作
+>
 > (3) UIControlEventTouchDragExit状态时，与UIControlEventTouchUpInside状态进行相同的操作
 > 
+>
 
+
+# 使用示例
 ~~~ javascript
 
 // 导入头文件
