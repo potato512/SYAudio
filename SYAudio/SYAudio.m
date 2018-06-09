@@ -248,7 +248,6 @@
     {
         [self audioPlayerPlay:filePath];
     }
-    
 }
 
 /// 音频播放停止
@@ -309,6 +308,7 @@
     }
     
     SYAudioTimerStart(self.audioRecorderTimer);
+    NSLog(@"开始检测音量");
 }
 
 - (void)timerStop
@@ -317,6 +317,7 @@
     {
         SYAudioTimerStop(self.audioRecorderTimer);
         SYAudioTimerKill(self.audioRecorderTimer);
+        NSLog(@"停止检测音量");
     }
 }
 

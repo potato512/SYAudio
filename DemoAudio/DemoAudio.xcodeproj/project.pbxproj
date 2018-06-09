@@ -17,6 +17,8 @@
 		A7642D871DDEFE0400A73CA7 /* DemoAudioUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = A7642D861DDEFE0400A73CA7 /* DemoAudioUITests.m */; };
 		A7D9F3431DE28FE80056DB43 /* BestRegards.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = A7D9F3421DE28FE80056DB43 /* BestRegards.mp3 */; };
 		A7D9F3461DE2900D0056DB43 /* LocalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A7D9F3451DE2900D0056DB43 /* LocalViewController.m */; };
+		DF0E8B4720CB9741009D729A /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF0E8B4620CB9741009D729A /* AVFoundation.framework */; };
+		DF0E8B4920CB9750009D729A /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF0E8B4820CB9750009D729A /* AudioToolbox.framework */; };
 		DFD2C8EA1F06904400E0016B /* record_animate_01.png in Resources */ = {isa = PBXBuildFile; fileRef = DFD2C8D61F06904400E0016B /* record_animate_01.png */; };
 		DFD2C8EB1F06904400E0016B /* record_animate_02.png in Resources */ = {isa = PBXBuildFile; fileRef = DFD2C8D71F06904400E0016B /* record_animate_02.png */; };
 		DFD2C8EC1F06904400E0016B /* record_animate_03.png in Resources */ = {isa = PBXBuildFile; fileRef = DFD2C8D81F06904400E0016B /* record_animate_03.png */; };
@@ -73,6 +75,8 @@
 		A7D9F3421DE28FE80056DB43 /* BestRegards.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = BestRegards.mp3; sourceTree = "<group>"; };
 		A7D9F3441DE2900D0056DB43 /* LocalViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocalViewController.h; sourceTree = "<group>"; };
 		A7D9F3451DE2900D0056DB43 /* LocalViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocalViewController.m; sourceTree = "<group>"; };
+		DF0E8B4620CB9741009D729A /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		DF0E8B4820CB9750009D729A /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		DFD2C8D61F06904400E0016B /* record_animate_01.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = record_animate_01.png; sourceTree = "<group>"; };
 		DFD2C8D71F06904400E0016B /* record_animate_02.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = record_animate_02.png; sourceTree = "<group>"; };
 		DFD2C8D81F06904400E0016B /* record_animate_03.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = record_animate_03.png; sourceTree = "<group>"; };
@@ -100,6 +104,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DF0E8B4920CB9750009D729A /* AudioToolbox.framework in Frameworks */,
+				DF0E8B4720CB9741009D729A /* AVFoundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -127,6 +133,7 @@
 				A7642D7A1DDEFE0400A73CA7 /* DemoAudioTests */,
 				A7642D851DDEFE0400A73CA7 /* DemoAudioUITests */,
 				A7642D5F1DDEFE0300A73CA7 /* Products */,
+				DF0E8B4520CB9741009D729A /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -184,6 +191,15 @@
 				A7642D881DDEFE0400A73CA7 /* Info.plist */,
 			);
 			path = DemoAudioUITests;
+			sourceTree = "<group>";
+		};
+		DF0E8B4520CB9741009D729A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				DF0E8B4820CB9750009D729A /* AudioToolbox.framework */,
+				DF0E8B4620CB9741009D729A /* AVFoundation.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		DFD2C8D41F06904400E0016B /* SYAudio */ = {
