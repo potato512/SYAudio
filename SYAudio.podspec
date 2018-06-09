@@ -10,7 +10,7 @@ Pod::Spec.new do |s|
   s.source       = { :git => "https://github.com/potato512/SYAudio.git", :tag => "#{s.version}" }
   s.source_files  = "SYAudio/AudioRecorderImage/*.{png}", "SYAudio/*.{h,m}"
 
-  s.frameworks = "AVFoundation.framework", "AudioToolbox.framework"
+  s.frameworks = "AVFoundation", "AudioToolbox"
   s.requires_arc = true
 
 end
