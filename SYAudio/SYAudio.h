@@ -7,6 +7,7 @@
 //  音频录制与播放
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 #import "SYAudioFile.h"
 #import "SYAudioTimer.h"
 

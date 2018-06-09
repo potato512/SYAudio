@@ -11,7 +11,6 @@
 // 导入录音头文件（注意添加framework：AVFoundation.framework、AudioToolbox.framework）
 #import <AudioToolbox/AudioToolbox.h>
 #import <AVFoundation/AVFoundation.h>
-#import "AppDelegate.h"
 
 @interface SYAudio () <AVAudioRecorderDelegate>
 
@@ -123,16 +122,15 @@
         {
             [self.audioRecorder record];
             
-            //录音音量显示 75*111
-            AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-            UIView *view = [delegate window];
-            
-            self.imgView = [[UIView alloc] initWithFrame:CGRectMake((view.frame.size.width - 120) / 2, (view.frame.size.height - 120) / 2, 120, 120)];
-            [view addSubview:self.imgView];
+            // 录音音量显示 75*111
+            UIWindow *window = [[UIApplication sharedApplication] keyWindow];
+            //
+            self.imgView = [[UIView alloc] initWithFrame:CGRectMake((window.frame.size.width - 120) / 2, (window.frame.size.height - 120) / 2, 120, 120)];
+            [window addSubview:self.imgView];
             [self.imgView.layer setCornerRadius:10.0];
             [self.imgView.layer setBackgroundColor:[UIColor blackColor].CGColor];
             [self.imgView setAlpha:0.8];
-            
+            //
             self.audioRecorderVoiceImgView = [[UIImageView alloc] initWithFrame:CGRectMake((self.imgView.frame.size.width - 60) / 2, (self.imgView.frame.size.height - 60 * 111 / 75) / 2, 60, 60 * 111 / 75)];
             [self.imgView addSubview:self.audioRecorderVoiceImgView];
             [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_01.png"]];
@@ -185,6 +183,9 @@
     self.audioPlayer = nil;
     return time;
 }
+
+#pragma mark - getter
+
 
 #pragma mark - 音频处理-播放/停止
 
