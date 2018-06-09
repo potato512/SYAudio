@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
 
-  s.name         = "SYAudio.podspec"
+  s.name         = "SYAudio"
   s.version      = "1.0.0"
   s.summary      = "Easy to play or stop audio, and to record the radio."
   s.homepage     = "https://github.com/potato512/SYAudio"
