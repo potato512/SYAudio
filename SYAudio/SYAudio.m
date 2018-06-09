@@ -8,10 +8,6 @@
 
 #import "SYAudio.h"
 
-// 导入录音头文件（注意添加framework：AVFoundation.framework、AudioToolbox.framework）
-#import <AudioToolbox/AudioToolbox.h>
-#import <AVFoundation/AVFoundation.h>
-
 @interface SYAudio () <AVAudioRecorderDelegate>
 
 @property (nonatomic, strong) NSMutableDictionary *audioRecorderDict;    // 录音设置
