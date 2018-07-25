@@ -41,7 +41,7 @@
     self = [super init];
     if (self)
     {
-
+        self.showRecorderVoiceStatus = YES;
     }
     
     return self;
@@ -118,22 +118,8 @@
         {
             [self.audioRecorder record];
             
-            // 录音音量显示 75*111
-            UIWindow *window = [[UIApplication sharedApplication] keyWindow];
-            //
-            self.imgView = [[UIView alloc] initWithFrame:CGRectMake((window.frame.size.width - 120) / 2, (window.frame.size.height - 120) / 2, 120, 120)];
-            [window addSubview:self.imgView];
-            [self.imgView.layer setCornerRadius:10.0];
-            [self.imgView.layer setBackgroundColor:[UIColor blackColor].CGColor];
-            [self.imgView setAlpha:0.8];
-            //
-            self.audioRecorderVoiceImgView = [[UIImageView alloc] initWithFrame:CGRectMake((self.imgView.frame.size.width - 60) / 2, (self.imgView.frame.size.height - 60 * 111 / 75) / 2, 60, 60 * 111 / 75)];
-            [self.imgView addSubview:self.audioRecorderVoiceImgView];
-            [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_01.png"]];
-            [self.audioRecorderVoiceImgView setBackgroundColor:[UIColor clearColor]];
-            
-            // 设置定时检测
-            [self timerStart];
+            // 显示录音状态图标
+            [self showRecorderVoiceImageView];
         }
     }
 }
@@ -154,20 +140,8 @@
         }
     }
     
-    // 移除音量图标
-    if (self.audioRecorderVoiceImgView)
-    {
-        [self.audioRecorderVoiceImgView setHidden:YES];
-        [self.audioRecorderVoiceImgView setImage:nil];
-        [self.audioRecorderVoiceImgView removeFromSuperview];
-        self.audioRecorderVoiceImgView = nil;
-        
-        [self.imgView removeFromSuperview];
-        self.imgView = nil;
-    }
-    
-    // 释放计时器
-    [self timerStop];
+    // 隐藏录音图标
+    [self hideRecorderVoiceImageView];
 }
 
 /// 录音时长
@@ -298,12 +272,8 @@
 
 - (void)timerStart
 {
-    if (self.audioRecorderTimer == nil)
-    {
-        // 设置定时检测
-        self.audioRecorderTimer = SYAudioTimerInitialize(0.0, nil, YES, self, @selector(detectionVoice));
-    }
-    
+    // 设置定时检测
+    self.audioRecorderTimer = SYAudioTimerInitialize(0.0, nil, YES, self, @selector(detectionVoice));
     SYAudioTimerStart(self.audioRecorderTimer);
     NSLog(@"开始检测音量");
 }
@@ -318,7 +288,6 @@
     }
 }
 
-
 /// 录音音量显示
 - (void)detectionVoice
 {
@@ -331,6 +300,8 @@
 //    [self.audioRecorder peakPowerForChannel:0];
     
     double lowPassResults = pow(10, (0.05 * [self.audioRecorder peakPowerForChannel:0]));
+    
+    NSLog(@"voice: %f", lowPassResults);
     
     if (0 < lowPassResults <= 0.06)
     {
@@ -387,6 +358,51 @@
     else
     {
         [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_14.png"]];
+    }
+}
+
+// 显示录音状态图标
+- (void)showRecorderVoiceImageView
+{
+    if (self.showRecorderVoiceStatus) {
+        // 录音音量显示 75*111
+        UIWindow *window = [[UIApplication sharedApplication] keyWindow];
+        //
+        self.imgView = [[UIView alloc] initWithFrame:CGRectMake((window.frame.size.width - 120) / 2, (window.frame.size.height - 120) / 2, 120, 120)];
+        [window addSubview:self.imgView];
+        [self.imgView.layer setCornerRadius:10.0];
+        [self.imgView.layer setBackgroundColor:[UIColor blackColor].CGColor];
+        [self.imgView setAlpha:0.8];
+        //
+        self.audioRecorderVoiceImgView = [[UIImageView alloc] initWithFrame:CGRectMake((self.imgView.frame.size.width - 60) / 2, (self.imgView.frame.size.height - 60 * 111 / 75) / 2, 60, 60 * 111 / 75)];
+        [self.imgView addSubview:self.audioRecorderVoiceImgView];
+        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_01.png"]];
+        [self.audioRecorderVoiceImgView setBackgroundColor:[UIColor clearColor]];
+        
+        // 设置定时检测
+        [self timerStart];
+    }
+}
+
+// 隐藏录音状态图标
+- (void)hideRecorderVoiceImageView
+{
+    if (self.showRecorderVoiceStatus)
+    {
+        // 移除音量图标
+        if (self.audioRecorderVoiceImgView)
+        {
+            [self.audioRecorderVoiceImgView setHidden:YES];
+            [self.audioRecorderVoiceImgView setImage:nil];
+            [self.audioRecorderVoiceImgView removeFromSuperview];
+            self.audioRecorderVoiceImgView = nil;
+            
+            [self.imgView removeFromSuperview];
+            self.imgView = nil;
+        }
+        
+        // 释放计时器
+        [self timerStop];
     }
 }
 

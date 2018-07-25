@@ -56,11 +56,6 @@
 
 - (void)setUI
 {
-    if ([self respondsToSelector:@selector(setEdgesForExtendedLayout:)])
-    {
-        [self setEdgesForExtendedLayout:UIRectEdgeNone];
-    }
-    
     self.mainTableView = [[UITableView alloc] initWithFrame:CGRectMake(0.0, 0.0, CGRectGetWidth(self.view.bounds), CGRectGetHeight(self.view.bounds) - 10.0 - 40.0 - 10.0) style:UITableViewStylePlain];
     [self.view addSubview:self.mainTableView];
     self.mainTableView.tableFooterView = [[UIView alloc] init];
@@ -71,6 +66,15 @@
     self.mainTableView.layoutMargins = UIEdgeInsetsZero;
     self.mainTableView.delegate = self;
     self.mainTableView.dataSource = self;
+    //
+    UIButton *headerButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0, 0.0, self.view.frame.size.width, 44.0)];
+    [headerButton setTitle:@"开始录音" forState:UIControlStateNormal];
+    [headerButton setTitle:@"停止录音" forState:UIControlStateSelected];
+    [headerButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [headerButton setTitleColor:[UIColor redColor] forState:UIControlStateHighlighted];
+    [headerButton addTarget:self action:@selector(buttonClick:) forControlEvents:UIControlEventTouchUpInside];
+    headerButton.selected = NO;
+    self.mainTableView.tableHeaderView = headerButton;
     
     
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -124,6 +128,7 @@
 
 - (void)recordStartButtonDown:(UIButton *)button
 {
+    [SYAudio shareAudio].showRecorderVoiceStatus = YES;
     [self startRecorder];
 }
 
@@ -135,6 +140,17 @@
 - (void)recordStopButtonExit:(UIButton *)button
 {
     [self saveRecorder];
+}
+
+- (void)buttonClick:(UIButton *)button
+{
+    button.selected = !button.selected;
+    if (button.selected) {
+        [SYAudio shareAudio].showRecorderVoiceStatus = NO;
+        [self startRecorder];
+    } else {
+        [self saveRecorder];
+    }
 }
 
 #pragma mark - 音频处理方法

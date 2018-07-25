@@ -305,6 +305,7 @@
 				TargetAttributes = {
 					A7642D5D1DDEFE0300A73CA7 = {
 						CreatedOnToolsVersion = 7.2.1;
+						DevelopmentTeam = 5JH8ZFBFJD;
 					};
 					A7642D761DDEFE0400A73CA7 = {
 						CreatedOnToolsVersion = 7.2.1;
@@ -530,10 +531,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = 5JH8ZFBFJD;
 				INFOPLIST_FILE = DemoAudio/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.zsy.DemoAudio;
+				PRODUCT_BUNDLE_IDENTIFIER = com.herman.DemoAudio;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -542,10 +544,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = 5JH8ZFBFJD;
 				INFOPLIST_FILE = DemoAudio/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.zsy.DemoAudio;
+				PRODUCT_BUNDLE_IDENTIFIER = com.herman.DemoAudio;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

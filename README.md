@@ -22,53 +22,57 @@
 >
 > (3) UIControlEventTouchDragExit状态时，与UIControlEventTouchUpInside状态进行相同的操作
 > 
->
+> 4 注意隐私设置，添加启用录音功能
+> 设置方法：https://blog.csdn.net/potato512/article/details/52595649
 
 
 # 使用示例
-~~~ javascript
-
+```
 // 导入头文件
 #import "SYAudio.h"
+```
 
-~~~ 
+```
+// 音量图标显示
+[SYAudio shareAudio].showRecorderVoiceStatus = YES;
+// 音量图标不显示
+[SYAudio shareAudio].showRecorderVoiceStatus = NO;
+```
 
-~~~ javascript
-
+```
 // 音频处理方法-开始录音        
 NSString *filePath = xxxxx;
 [[SYAudio shareAudio] audioRecorderStartWithFilePath:filePath];
+```
 
-~~~
-
-~~~ javascript
-
+```
 // 音频处理方法-停止录音        
 [[SYAudio shareAudio] audioRecorderStop];
+```
 
-~~~
-
-~~~ javascript
-
+```
 // 音频处理方法-播放录音  
 NSString *filePath = xxxxx;
 [[SYAudio shareAudio] audioPlayWithFilePath:filePath];
+```
 
-~~~
-
-~~~ javascript
-
+```
 // 音频处理方法-停止录音播放        
 [[SYAudio shareAudio] audioStop];
-
-~~~
+```
 
 
 
 # 修改完善
+* 20180726
+  * 版本号：1.0.1
+  * 修改完善
+    * 音量图标显示异常修改
+    * 音量图标是否显示属性设置`showRecorderVoiceStatus`
+
 * 20170630 当前播放与上一条播放判断是否同一个文件的方法添加中文转码，避免判断失败
-~~~ javascript
+```
 NSString *pathPrevious = [self.audioPlayer.url relativeString];
 pathPrevious = [pathPrevious stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-~~~
+```
 

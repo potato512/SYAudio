@@ -12,8 +12,7 @@
 
 NSTimer *SYAudioTimerInitialize(NSTimeInterval timeElapsed, id userInfo, BOOL isRepeat, id target, SEL action)
 {
-    NSTimer *timer = [NSTimer scheduledTimerWithTimeInterval:timeElapsed target:target selector:action userInfo:userInfo repeats:isRepeat];
-    // 非必要设置，实际已设置为 NSDefaultRunLoopMode 模式
+    NSTimer *timer = [NSTimer timerWithTimeInterval:timeElapsed target:target selector:action userInfo:userInfo repeats:isRepeat];
     [[NSRunLoop currentRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
     [timer setFireDate:[NSDate distantFuture]];
     
