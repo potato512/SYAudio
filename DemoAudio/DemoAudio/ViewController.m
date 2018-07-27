@@ -10,12 +10,16 @@
 #import "SYAudio.h"
 #import "LocalViewController.h"
 
-@interface ViewController () <UITableViewDataSource, UITableViewDelegate>
+@interface ViewController () <UITableViewDataSource, UITableViewDelegate, SYAudioDelegate>
 
 @property (nonatomic, strong) NSString *filePath;
 
 @property (nonatomic, strong) UITableView *mainTableView;
 @property (nonatomic, strong) NSMutableArray *mainArray;
+
+@property (nonatomic, assign) NSTimeInterval audioRecorderTime;          // 录音时长
+@property (nonatomic, strong) UIView *imgView;                           // 录音音量图像父视图
+@property (nonatomic, strong) UIImageView *audioRecorderVoiceImgView;    // 录音音量图像
 
 @end
 
@@ -128,7 +132,7 @@
 
 - (void)recordStartButtonDown:(UIButton *)button
 {
-    [SYAudio shareAudio].showRecorderVoiceStatus = YES;
+    [SYAudio shareAudio].showRecorderVoice = YES;
     [self startRecorder];
 }
 
@@ -146,7 +150,7 @@
 {
     button.selected = !button.selected;
     if (button.selected) {
-        [SYAudio shareAudio].showRecorderVoiceStatus = NO;
+        [SYAudio shareAudio].showRecorderVoice = NO;
         [self startRecorder];
     } else {
         [self saveRecorder];
@@ -158,7 +162,8 @@
 // 开始录音
 - (void)startRecorder
 {
-    self.filePath = [SYAudioFile SYAudioGetFilePathWithDate];
+    self.filePath = [SYAudioFile SYAudioDefaultFilePath:nil];
+    [SYAudio shareAudio].delegate = self;
     [[SYAudio shareAudio] audioRecorderStartWithFilePath:self.filePath];
 }
 
@@ -244,5 +249,99 @@
     [[SYAudio shareAudio] audioPlayWithFilePath:filePath];
 }
 
+
+#pragma mark - 代理
+
+- (void)recordBegined
+{
+    // 录音音量显示 75*111
+    UIWindow *window = [[UIApplication sharedApplication] keyWindow];
+    //
+    self.imgView = [[UIView alloc] initWithFrame:CGRectMake((window.frame.size.width - 120) / 2, (window.frame.size.height - 120) / 2, 120, 120)];
+    [window addSubview:self.imgView];
+    [self.imgView.layer setCornerRadius:10.0];
+    [self.imgView.layer setBackgroundColor:[UIColor blackColor].CGColor];
+    [self.imgView setAlpha:0.8];
+    //
+    self.audioRecorderVoiceImgView = [[UIImageView alloc] initWithFrame:CGRectMake((self.imgView.frame.size.width - 60) / 2, (self.imgView.frame.size.height - 60 * 111 / 75) / 2, 60, 60 * 111 / 75)];
+    [self.imgView addSubview:self.audioRecorderVoiceImgView];
+    [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_01.png"]];
+    [self.audioRecorderVoiceImgView setBackgroundColor:[UIColor clearColor]];
+}
+
+- (void)recordFinshed
+{
+    // 移除音量图标
+    if (self.audioRecorderVoiceImgView)
+    {
+        [self.audioRecorderVoiceImgView setHidden:YES];
+        [self.audioRecorderVoiceImgView setImage:nil];
+        [self.audioRecorderVoiceImgView removeFromSuperview];
+        self.audioRecorderVoiceImgView = nil;
+        
+        [self.imgView removeFromSuperview];
+        self.imgView = nil;
+    }
+}
+
+- (void)recordingUpdateVoice:(double)lowPassResults
+{
+    if (0 < lowPassResults <= 0.06)
+    {
+        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_01.png"]];
+    }
+    else if (0.06 < lowPassResults <= 0.13)
+    {
+        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_02.png"]];
+    }
+    else if (0.13 < lowPassResults <= 0.20)
+    {
+        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_03.png"]];
+    }
+    else if (0.20 < lowPassResults <= 0.27)
+    {
+        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_04.png"]];
+    }
+    else if (0.27 < lowPassResults <= 0.34)
+    {
+        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_05.png"]];
+    }
+    else if (0.34 < lowPassResults <= 0.41)
+    {
+        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_06.png"]];
+    }
+    else if (0.41 < lowPassResults <= 0.48)
+    {
+        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_07.png"]];
+    }
+    else if (0.48 < lowPassResults <= 0.55)
+    {
+        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_08.png"]];
+    }
+    else if (0.55 < lowPassResults <= 0.62)
+    {
+        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_09.png"]];
+    }
+    else if (0.62 < lowPassResults <= 0.69)
+    {
+        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_10.png"]];
+    }
+    else if (0.69 < lowPassResults <= 0.76)
+    {
+        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_11.png"]];
+    }
+    else if (0.76 < lowPassResults <= 0.83)
+    {
+        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_12.png"]];
+    }
+    else if (0.83 < lowPassResults <= 0.9)
+    {
+        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_13.png"]];
+    }
+    else
+    {
+        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_14.png"]];
+    }
+}
 
 @end

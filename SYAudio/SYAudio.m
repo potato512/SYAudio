@@ -7,16 +7,21 @@
 //
 
 #import "SYAudio.h"
+#import "lame.h"
 
-@interface SYAudio () <AVAudioRecorderDelegate>
+@interface SYAudio () <AVAudioRecorderDelegate, AVAudioPlayerDelegate>
 
 @property (nonatomic, strong) NSMutableDictionary *audioRecorderDict;    // 录音设置
 @property (nonatomic, strong) AVAudioRecorder *audioRecorder;            // 录音
+@property (nonatomic, strong) NSString *recorderFilePath;
+
 @property (nonatomic, strong) AVAudioPlayer *audioPlayer;                // 播放
-@property (nonatomic, assign) NSTimeInterval audioRecorderTime;          // 录音时长
-@property (nonatomic, strong) UIView *imgView;                           // 录音音量图像父视图
-@property (nonatomic, strong) UIImageView *audioRecorderVoiceImgView;    // 录音音量图像
-@property (nonatomic, strong) NSTimer *audioRecorderTimer;               // 录音音量计时器
+@property (nonatomic, strong) NSString *playerFilePath;
+
+@property (nonatomic, strong) NSTimer *voiceTimer;                   // 录音音量计时器
+
+@property (nonatomic, strong) NSTimer *timecountTimer;               // 录音倒计时计时器
+@property (nonatomic, assign) NSTimeInterval timecountTime;          // 录音倒计时时间
 
 @end
 
@@ -41,7 +46,7 @@
     self = [super init];
     if (self)
     {
-        self.showRecorderVoiceStatus = YES;
+        self.showRecorderVoice = NO;
     }
     
     return self;
@@ -53,7 +58,8 @@
     // 内存释放前先停止录音，或音频播放
     [self audioStop];
     [self audioRecorderStop];
-    [self timerStop];
+    [self stopVoiceTimer];
+    [self stopTimecountTimer];
     
     if (self.audioRecorderDict)
     {
@@ -61,19 +67,13 @@
     }
     if (self.audioRecorder)
     {
+        self.audioRecorder.delegate = nil;
         self.audioRecorder = nil;
     }
     if (self.audioPlayer)
     {
+        self.audioPlayer.delegate = nil;
         self.audioPlayer = nil;
-    }
-    if (self.imgView)
-    {
-        self.imgView = nil;
-    }
-    if (self.audioRecorderVoiceImgView)
-    {
-        self.audioRecorderVoiceImgView = nil;
     }
 }
 
@@ -85,8 +85,8 @@
     {
         // 参数设置 格式、采样率、录音通道、线性采样位数、录音质量
         _audioRecorderDict = [NSMutableDictionary dictionary];
-        [_audioRecorderDict setValue:[NSNumber numberWithInt:kAudioFormatMPEG4AAC] forKey:AVFormatIDKey];
-        [_audioRecorderDict setValue:[NSNumber numberWithInt:11025] forKey:AVSampleRateKey];
+        [_audioRecorderDict setValue:[NSNumber numberWithInt:kAudioFormatLinearPCM] forKey:AVFormatIDKey];
+        [_audioRecorderDict setValue:[NSNumber numberWithInt:16000] forKey:AVSampleRateKey];
         [_audioRecorderDict setValue:[NSNumber numberWithInt:2] forKey:AVNumberOfChannelsKey];
         [_audioRecorderDict setValue:[NSNumber numberWithInt:16] forKey:AVLinearPCMBitDepthKey];
         [_audioRecorderDict setValue:[NSNumber numberWithInt:AVAudioQualityHigh] forKey:AVEncoderAudioQualityKey];
@@ -94,18 +94,19 @@
     return _audioRecorderDict;
 }
 
-#pragma mark - 音频处理-录音
+#pragma mark - 录音
 
 /// 开始录音
 - (void)audioRecorderStartWithFilePath:(NSString *)filePath
 {
+    self.recorderFilePath = filePath;
     // 生成录音文件
     NSURL *urlAudioRecorder = [NSURL fileURLWithPath:filePath];
     self.audioRecorder = [[AVAudioRecorder alloc] initWithURL:urlAudioRecorder settings:self.audioRecorderDict error:nil];
     
     // 开启音量检测
-    [self.audioRecorder setMeteringEnabled:YES];
-    [self.audioRecorder setDelegate:self];
+    self.audioRecorder.meteringEnabled = YES;
+    self.audioRecorder.delegate = self;
     
     if (self.audioRecorder)
     {
@@ -118,8 +119,12 @@
         {
             [self.audioRecorder record];
             
-            // 显示录音状态图标
-            [self showRecorderVoiceImageView];
+            if (self.delegate && [self.delegate respondsToSelector:@selector(recordBegined)]) {
+                [self.delegate recordBegined];
+            }
+
+            [self startVoiceTimer];
+            [self startTimecountTimer];
         }
     }
 }
@@ -131,17 +136,18 @@
     {
         if ([self.audioRecorder isRecording])
         {
-            // 获取录音时长
-            self.audioRecorderTime = [self.audioRecorder currentTime];
             [self.audioRecorder stop];
+
+            [self audioConvertMP3];
             
             // 停止录音后释放掉
+            self.audioRecorder.delegate = nil;
             self.audioRecorder = nil;
         }
     }
     
-    // 隐藏录音图标
-    [self hideRecorderVoiceImageView];
+    [self stopVoiceTimer];
+    [self stopTimecountTimer];
 }
 
 /// 录音时长
@@ -154,10 +160,7 @@
     return time;
 }
 
-#pragma mark - getter
-
-
-#pragma mark - 音频处理-播放/停止
+#pragma mark - 播放/停止
 
 /// 音频开始播放或停止
 - (void)audioPlayWithFilePath:(NSString *)filePath
@@ -227,7 +230,6 @@
     [self audioPlayerStop];
 }
 
-
 /// 音频播放器开始播放
 - (void)audioPlayerPlay:(NSString *)filePath
 {
@@ -240,6 +242,7 @@
     
     NSURL *urlFile = [NSURL fileURLWithPath:filePath];
     self.audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:urlFile error:nil];
+    self.audioPlayer.delegate = self;
     if (self.audioPlayer)
     {
         if ([self.audioPlayer prepareToPlay])
@@ -250,6 +253,10 @@
             [playSession setActive:YES error:nil];
             
             [self.audioPlayer play];
+            
+            if (self.delegate && [self.delegate respondsToSelector:@selector(audioPlayBegined)]) {
+                [self.delegate audioPlayBegined];
+            }
         }
     }
 }
@@ -264,26 +271,30 @@
             [self.audioPlayer stop];
         }
         
+        self.audioPlayer.delegate = nil;
         self.audioPlayer = nil;
     }
 }
 
 #pragma mark - timer
 
-- (void)timerStart
+#pragma mark 录音计时器
+
+- (void)startVoiceTimer
 {
-    // 设置定时检测
-    self.audioRecorderTimer = SYAudioTimerInitialize(0.0, nil, YES, self, @selector(detectionVoice));
-    SYAudioTimerStart(self.audioRecorderTimer);
-    NSLog(@"开始检测音量");
+    if (self.showRecorderVoice) {
+        self.voiceTimer = SYAudioTimerInitialize(0.0, nil, YES, self, @selector(detectionVoice));
+        SYAudioTimerStart(self.voiceTimer);
+        NSLog(@"开始检测音量");
+    }
 }
 
-- (void)timerStop
+- (void)stopVoiceTimer
 {
-    if (self.audioRecorderTimer)
+    if (self.voiceTimer)
     {
-        SYAudioTimerStop(self.audioRecorderTimer);
-        SYAudioTimerKill(self.audioRecorderTimer);
+        SYAudioTimerStop(self.voiceTimer);
+        SYAudioTimerKill(self.voiceTimer);
         NSLog(@"停止检测音量");
     }
 }
@@ -300,110 +311,165 @@
 //    [self.audioRecorder peakPowerForChannel:0];
     
     double lowPassResults = pow(10, (0.05 * [self.audioRecorder peakPowerForChannel:0]));
+    if (self.delegate && [self.delegate respondsToSelector:@selector(recordingUpdateVoice:)])
+    {
+        [self.delegate recordingUpdateVoice:lowPassResults];
+    }
     
     NSLog(@"voice: %f", lowPassResults);
+}
+
+#pragma mark 倒计时计时器
+
+- (void)startTimecountTimer
+{
+    if (self.totalTime <= 0.0) {
+        return;
+    }
     
-    if (0 < lowPassResults <= 0.06)
+    self.timecountTime = -1.0;
+    self.timecountTimer = SYAudioTimerInitialize(0.0, nil, YES, self, @selector(detectionTime));
+    SYAudioTimerStart(self.timecountTimer);
+    NSLog(@"开始录音倒计时");
+}
+
+- (void)stopTimecountTimer
+{
+    if (self.timecountTimer)
     {
-        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_01.png"]];
-    }
-    else if (0.06 < lowPassResults <= 0.13)
-    {
-        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_02.png"]];
-    }
-    else if (0.13 < lowPassResults <= 0.20)
-    {
-        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_03.png"]];
-    }
-    else if (0.20 < lowPassResults <= 0.27)
-    {
-        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_04.png"]];
-    }
-    else if (0.27 < lowPassResults <= 0.34)
-    {
-        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_05.png"]];
-    }
-    else if (0.34 < lowPassResults <= 0.41)
-    {
-        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_06.png"]];
-    }
-    else if (0.41 < lowPassResults <= 0.48)
-    {
-        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_07.png"]];
-    }
-    else if (0.48 < lowPassResults <= 0.55)
-    {
-        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_08.png"]];
-    }
-    else if (0.55 < lowPassResults <= 0.62)
-    {
-        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_09.png"]];
-    }
-    else if (0.62 < lowPassResults <= 0.69)
-    {
-        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_10.png"]];
-    }
-    else if (0.69 < lowPassResults <= 0.76)
-    {
-        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_11.png"]];
-    }
-    else if (0.76 < lowPassResults <= 0.83)
-    {
-        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_12.png"]];
-    }
-    else if (0.83 < lowPassResults <= 0.9)
-    {
-        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_13.png"]];
-    }
-    else
-    {
-        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_14.png"]];
+        SYAudioTimerStop(self.timecountTimer);
+        SYAudioTimerKill(self.timecountTimer);
+        NSLog(@"停止录音倒计时");
     }
 }
 
-// 显示录音状态图标
-- (void)showRecorderVoiceImageView
+- (void)detectionTime
 {
-    if (self.showRecorderVoiceStatus) {
-        // 录音音量显示 75*111
-        UIWindow *window = [[UIApplication sharedApplication] keyWindow];
-        //
-        self.imgView = [[UIView alloc] initWithFrame:CGRectMake((window.frame.size.width - 120) / 2, (window.frame.size.height - 120) / 2, 120, 120)];
-        [window addSubview:self.imgView];
-        [self.imgView.layer setCornerRadius:10.0];
-        [self.imgView.layer setBackgroundColor:[UIColor blackColor].CGColor];
-        [self.imgView setAlpha:0.8];
-        //
-        self.audioRecorderVoiceImgView = [[UIImageView alloc] initWithFrame:CGRectMake((self.imgView.frame.size.width - 60) / 2, (self.imgView.frame.size.height - 60 * 111 / 75) / 2, 60, 60 * 111 / 75)];
-        [self.imgView addSubview:self.audioRecorderVoiceImgView];
-        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_01.png"]];
-        [self.audioRecorderVoiceImgView setBackgroundColor:[UIColor clearColor]];
+    self.timecountTime += 1.0;
+    NSTimeInterval time = (self.totalTime - self.timecountTime);
+    if (self.delegate && [self.delegate respondsToSelector:@selector(recordingWithResidualTime:timer:)]) {
+        [self.delegate recordingWithResidualTime:time timer:(self.totalTime > 0.0 ? YES : NO)];
+    }
+    
+    if (time <= 0.0 && self.totalTime > 0.0)
+    {
+        [self audioRecorderStop];
+    }
+}
+
+#pragma mark - Convert Utils
+
+- (void)audioConvertMP3
+{
+    NSString *cafFilePath = self.recorderFilePath;
+    NSString *mp3FilePath = [SYAudioFile SYAudioMP3FilePath:self.filePathMP3];
+    
+    NSLog(@"MP3转换开始");
+    if (self.delegate && [self.delegate respondsToSelector:@selector(recordBeginConvert)]) {
+        [self.delegate recordBeginConvert];
+    }
+    
+    @try {
+        int read, write;
         
-        // 设置定时检测
-        [self timerStart];
-    }
-}
-
-// 隐藏录音状态图标
-- (void)hideRecorderVoiceImageView
-{
-    if (self.showRecorderVoiceStatus)
-    {
-        // 移除音量图标
-        if (self.audioRecorderVoiceImgView)
-        {
-            [self.audioRecorderVoiceImgView setHidden:YES];
-            [self.audioRecorderVoiceImgView setImage:nil];
-            [self.audioRecorderVoiceImgView removeFromSuperview];
-            self.audioRecorderVoiceImgView = nil;
+        FILE *pcm = fopen([cafFilePath cStringUsingEncoding:1], "rb");  //source 被转换的音频文件位置
+        fseek(pcm, 4 * 1024, SEEK_CUR);                                   //skip file header
+        FILE *mp3 = fopen([mp3FilePath cStringUsingEncoding:1], "wb");  //output 输出生成的Mp3文件位置
+        
+        const int PCM_SIZE = 8192;
+        const int MP3_SIZE = 8192;
+        short int pcm_buffer[PCM_SIZE*2];
+        unsigned char mp3_buffer[MP3_SIZE];
+        
+        lame_t lame = lame_init();
+        lame_set_in_samplerate(lame, 16000); // 采样率不对，编出来的声音完全不对
+        lame_set_VBR(lame, vbr_default);
+        lame_init_params(lame);
+        
+        do {
+            read = fread(pcm_buffer, 2 * sizeof(short int), PCM_SIZE, pcm);
+            if (read == 0)
+            {
+                write = lame_encode_flush(lame, mp3_buffer, MP3_SIZE);
+            }
+            else
+            {
+                write = lame_encode_buffer_interleaved(lame, pcm_buffer, read, mp3_buffer, MP3_SIZE);
+            }
             
-            [self.imgView removeFromSuperview];
-            self.imgView = nil;
-        }
+            fwrite(mp3_buffer, write, 1, mp3);
+            
+        } while (read != 0);
         
-        // 释放计时器
-        [self timerStop];
+        lame_close(lame);
+        fclose(mp3);
+        fclose(pcm);
+    } @catch (NSException *exception) {
+        NSLog(@"%@",[exception description]);
+        mp3FilePath = nil;
+    } @finally {
+        [[AVAudioSession sharedInstance] setCategory: AVAudioSessionCategoryPlayback error: nil];
+        NSLog(@"MP3转换结束");
+        if (self.delegate && [self.delegate respondsToSelector:@selector(recordFinshConvert:)]) {
+            [self.delegate recordFinshConvert:mp3FilePath];
+        }
     }
 }
+
+#pragma mark - 代理
+
+#pragma mark AVAudioRecorderDelegate
+
+- (void)audioRecorderDidFinishRecording:(AVAudioRecorder *)recorder successfully:(BOOL)flag
+{
+    if (self.delegate && [self.delegate respondsToSelector:@selector(recordFinshed)]) {
+        [self.delegate recordFinshed];
+    }
+}
+
+#pragma mark AVAudioPlayerDelegate
+
+/* audioPlayerDidFinishPlaying:successfully: is called when a sound has finished playing. This method is NOT called if the player is stopped due to an interruption. */
+- (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag
+{
+    if (self.delegate && [self.delegate respondsToSelector:@selector(audioPlayFinished)]) {
+        [self.delegate audioPlayFinished];
+    }
+}
+
+/* if an error occurs while decoding it will be reported to the delegate. */
+- (void)audioPlayerDecodeErrorDidOccur:(AVAudioPlayer *)player error:(NSError * __nullable)error
+{
+    
+}
+
+#if TARGET_OS_IPHONE
+
+/* AVAudioPlayer INTERRUPTION NOTIFICATIONS ARE DEPRECATED - Use AVAudioSession instead. */
+
+/* audioPlayerBeginInterruption: is called when the audio session has been interrupted while the player was playing. The player will have been paused. */
+- (void)audioPlayerBeginInterruption:(AVAudioPlayer *)player
+{
+    
+}
+
+/* audioPlayerEndInterruption:withOptions: is called when the audio session interruption has ended and this player had been interrupted while playing. */
+/* Currently the only flag is AVAudioSessionInterruptionFlags_ShouldResume. */
+- (void)audioPlayerEndInterruption:(AVAudioPlayer *)player withOptions:(NSUInteger)flags
+{
+    
+}
+
+- (void)audioPlayerEndInterruption:(AVAudioPlayer *)player withFlags:(NSUInteger)flags
+{
+    
+}
+
+/* audioPlayerEndInterruption: is called when the preferred method, audioPlayerEndInterruption:withFlags:, is not implemented. */
+- (void)audioPlayerEndInterruption:(AVAudioPlayer *)player
+{
+    
+}
+
 
 @end
