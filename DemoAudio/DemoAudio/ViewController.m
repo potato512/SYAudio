@@ -21,6 +21,8 @@
 @property (nonatomic, strong) UIView *imgView;                           // 录音音量图像父视图
 @property (nonatomic, strong) UIImageView *audioRecorderVoiceImgView;    // 录音音量图像
 
+@property (nonatomic, strong) NSString *filePathMP3;
+
 @end
 
 @implementation ViewController
@@ -132,7 +134,7 @@
 
 - (void)recordStartButtonDown:(UIButton *)button
 {
-    [SYAudio shareAudio].showRecorderVoice = YES;
+    [SYAudio shareAudio].monitorVoice = YES;
     [self startRecorder];
 }
 
@@ -150,7 +152,7 @@
 {
     button.selected = !button.selected;
     if (button.selected) {
-        [SYAudio shareAudio].showRecorderVoice = NO;
+        [SYAudio shareAudio].monitorVoice = NO;
         [self startRecorder];
     } else {
         [self saveRecorder];
@@ -194,7 +196,10 @@
 // 录音开始播放，或停止
 - (void)playRecorder
 {
-    [[SYAudio shareAudio] audioPlayWithFilePath:self.filePath];
+    // 未压缩文件
+//    [[SYAudio shareAudio] audioPlayWithFilePath:self.filePath];
+    // 压缩后文件
+    [[SYAudio shareAudio] audioPlayWithFilePath:self.filePathMP3];
 }
 
 // 录音停止播放
@@ -252,8 +257,13 @@
 
 #pragma mark - 代理
 
+#pragma mark 录音
+
+/// 开始录音
 - (void)recordBegined
 {
+    NSLog(@"%s", __func__);
+    
     // 录音音量显示 75*111
     UIWindow *window = [[UIApplication sharedApplication] keyWindow];
     //
@@ -269,8 +279,11 @@
     [self.audioRecorderVoiceImgView setBackgroundColor:[UIColor clearColor]];
 }
 
+/// 停止录音
 - (void)recordFinshed
 {
+    NSLog(@"%s", __func__);
+    
     // 移除音量图标
     if (self.audioRecorderVoiceImgView)
     {
@@ -284,8 +297,11 @@
     }
 }
 
+/// 正在录音中，录音音量监测
 - (void)recordingUpdateVoice:(double)lowPassResults
 {
+    NSLog(@"%s", __func__);
+    
     if (0 < lowPassResults <= 0.06)
     {
         [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_01.png"]];
@@ -343,5 +359,52 @@
         [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_14.png"]];
     }
 }
+
+/// 正中录音中，是否录音倒计时、录音剩余时长
+- (void)recordingWithResidualTime:(NSTimeInterval)time timer:(BOOL)isTimer
+{
+    NSLog(@"%s", __func__);
+    NSLog(@"录音倒计时：%f, 是否录音倒计时：%ld", time, isTimer);
+}
+
+#pragma mark 压缩
+
+/// 开始压缩录音
+- (void)recordBeginConvert
+{
+    NSLog(@"%s", __func__);
+}
+
+/// 结束压缩录音
+- (void)recordFinshConvert:(NSString *)filePath
+{
+    NSLog(@"%s", __func__);
+    NSLog(@"%@", filePath);
+    self.filePathMP3 = filePath;
+}
+
+
+
+#pragma mark 播放
+
+/// 开始播放音频
+- (void)audioPlayBegined
+{
+    NSLog(@"%s", __func__);
+}
+
+/// 正在播放音频（总时长，当前时长）
+- (void)audioPlaying:(NSTimeInterval)totalTime time:(NSTimeInterval)currentTime
+{
+    NSLog(@"%s", __func__);
+    NSLog(@"播放总时长：%f, 当前播放时间：%f", totalTime, currentTime);
+}
+
+/// 结束播放音频
+- (void)audioPlayFinished
+{
+    NSLog(@"%s", __func__);
+}
+
 
 @end

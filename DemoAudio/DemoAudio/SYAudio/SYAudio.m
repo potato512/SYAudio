@@ -85,6 +85,7 @@
     {
         // 参数设置 格式、采样率、录音通道、线性采样位数、录音质量
         _audioRecorderDict = [NSMutableDictionary dictionary];
+        // kAudioFormatMPEG4AAC ：xxx.acc；kAudioFormatLinearPCM ：xxx.caf
         [_audioRecorderDict setValue:[NSNumber numberWithInt:kAudioFormatLinearPCM] forKey:AVFormatIDKey];
         [_audioRecorderDict setValue:[NSNumber numberWithInt:16000] forKey:AVSampleRateKey];
         [_audioRecorderDict setValue:[NSNumber numberWithInt:2] forKey:AVNumberOfChannelsKey];
@@ -137,7 +138,8 @@
         if ([self.audioRecorder isRecording])
         {
             [self.audioRecorder stop];
-
+            NSLog(@"1 file size = %lld", [SYAudioFile SYAudioGetFileSizeWithFilePath:self.recorderFilePath]);
+            
             [self audioConvertMP3];
             
             // 停止录音后释放掉
@@ -257,6 +259,7 @@
             if (self.delegate && [self.delegate respondsToSelector:@selector(audioPlayBegined)]) {
                 [self.delegate audioPlayBegined];
             }
+            
             if (self.audioPlayer.isPlaying) {
                 NSTimeInterval totalTime = self.audioPlayer.duration;
                 if (self.delegate && [self.delegate respondsToSelector:@selector(audioPlaying:time:)]) {
@@ -408,11 +411,13 @@
         fclose(mp3);
         fclose(pcm);
     } @catch (NSException *exception) {
-        NSLog(@"%@",[exception description]);
+        NSLog(@"%@", [exception description]);
         mp3FilePath = nil;
     } @finally {
         [[AVAudioSession sharedInstance] setCategory: AVAudioSessionCategoryPlayback error: nil];
         NSLog(@"MP3转换结束");
+        NSLog(@"2 file size = %lld", [SYAudioFile SYAudioGetFileSizeWithFilePath:mp3FilePath]);
+        
         if (self.delegate && [self.delegate respondsToSelector:@selector(recordFinshConvert:)]) {
             [self.delegate recordFinshConvert:mp3FilePath];
         }

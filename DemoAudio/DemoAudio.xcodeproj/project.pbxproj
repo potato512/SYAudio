@@ -19,6 +19,7 @@
 		A7D9F3461DE2900D0056DB43 /* LocalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A7D9F3451DE2900D0056DB43 /* LocalViewController.m */; };
 		DF0E8B4720CB9741009D729A /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF0E8B4620CB9741009D729A /* AVFoundation.framework */; };
 		DF0E8B4920CB9750009D729A /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF0E8B4820CB9750009D729A /* AudioToolbox.framework */; };
+		DF4B8A472115776F00448E92 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = DF4B8A462115776F00448E92 /* libc++.tbd */; };
 		DFA1A692210A96E6006EFDAA /* record_animate_01.png in Resources */ = {isa = PBXBuildFile; fileRef = DFA1A684210A96E6006EFDAA /* record_animate_01.png */; };
 		DFA1A693210A96E6006EFDAA /* record_animate_02.png in Resources */ = {isa = PBXBuildFile; fileRef = DFA1A685210A96E6006EFDAA /* record_animate_02.png */; };
 		DFA1A694210A96E6006EFDAA /* record_animate_03.png in Resources */ = {isa = PBXBuildFile; fileRef = DFA1A686210A96E6006EFDAA /* record_animate_03.png */; };
@@ -33,10 +34,10 @@
 		DFA1A69D210A96E6006EFDAA /* record_animate_12.png in Resources */ = {isa = PBXBuildFile; fileRef = DFA1A68F210A96E6006EFDAA /* record_animate_12.png */; };
 		DFA1A69E210A96E6006EFDAA /* record_animate_13.png in Resources */ = {isa = PBXBuildFile; fileRef = DFA1A690210A96E6006EFDAA /* record_animate_13.png */; };
 		DFA1A69F210A96E6006EFDAA /* record_animate_14.png in Resources */ = {isa = PBXBuildFile; fileRef = DFA1A691210A96E6006EFDAA /* record_animate_14.png */; };
-		DFA1A6A3210A96EC006EFDAA /* libmp3lame.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DFA1A6A2210A96EC006EFDAA /* libmp3lame.a */; };
-		DFD2C8F81F06904400E0016B /* SYAudio.m in Sources */ = {isa = PBXBuildFile; fileRef = DFD2C8E51F06904400E0016B /* SYAudio.m */; };
-		DFD2C8F91F06904400E0016B /* SYAudioFile.m in Sources */ = {isa = PBXBuildFile; fileRef = DFD2C8E71F06904400E0016B /* SYAudioFile.m */; };
-		DFD2C8FA1F06904400E0016B /* SYAudioTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = DFD2C8E91F06904400E0016B /* SYAudioTimer.m */; };
+		DFD9033C2115EE6900CDBDB7 /* libmp3lame.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DFD903352115EE6800CDBDB7 /* libmp3lame.a */; };
+		DFD9033D2115EE6900CDBDB7 /* SYAudio.m in Sources */ = {isa = PBXBuildFile; fileRef = DFD903372115EE6800CDBDB7 /* SYAudio.m */; };
+		DFD9033E2115EE6900CDBDB7 /* SYAudioFile.m in Sources */ = {isa = PBXBuildFile; fileRef = DFD903392115EE6800CDBDB7 /* SYAudioFile.m */; };
+		DFD9033F2115EE6900CDBDB7 /* SYAudioTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = DFD9033B2115EE6800CDBDB7 /* SYAudioTimer.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -78,6 +79,7 @@
 		A7D9F3451DE2900D0056DB43 /* LocalViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocalViewController.m; sourceTree = "<group>"; };
 		DF0E8B4620CB9741009D729A /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		DF0E8B4820CB9750009D729A /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		DF4B8A462115776F00448E92 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		DFA1A684210A96E6006EFDAA /* record_animate_01.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = record_animate_01.png; sourceTree = "<group>"; };
 		DFA1A685210A96E6006EFDAA /* record_animate_02.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = record_animate_02.png; sourceTree = "<group>"; };
 		DFA1A686210A96E6006EFDAA /* record_animate_03.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = record_animate_03.png; sourceTree = "<group>"; };
@@ -92,14 +94,14 @@
 		DFA1A68F210A96E6006EFDAA /* record_animate_12.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = record_animate_12.png; sourceTree = "<group>"; };
 		DFA1A690210A96E6006EFDAA /* record_animate_13.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = record_animate_13.png; sourceTree = "<group>"; };
 		DFA1A691210A96E6006EFDAA /* record_animate_14.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = record_animate_14.png; sourceTree = "<group>"; };
-		DFA1A6A1210A96EC006EFDAA /* lame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lame.h; sourceTree = "<group>"; };
-		DFA1A6A2210A96EC006EFDAA /* libmp3lame.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libmp3lame.a; sourceTree = "<group>"; };
-		DFD2C8E41F06904400E0016B /* SYAudio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SYAudio.h; sourceTree = "<group>"; };
-		DFD2C8E51F06904400E0016B /* SYAudio.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SYAudio.m; sourceTree = "<group>"; };
-		DFD2C8E61F06904400E0016B /* SYAudioFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SYAudioFile.h; sourceTree = "<group>"; };
-		DFD2C8E71F06904400E0016B /* SYAudioFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SYAudioFile.m; sourceTree = "<group>"; };
-		DFD2C8E81F06904400E0016B /* SYAudioTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SYAudioTimer.h; sourceTree = "<group>"; };
-		DFD2C8E91F06904400E0016B /* SYAudioTimer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SYAudioTimer.m; sourceTree = "<group>"; };
+		DFD903342115EE6800CDBDB7 /* lame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lame.h; sourceTree = "<group>"; };
+		DFD903352115EE6800CDBDB7 /* libmp3lame.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libmp3lame.a; sourceTree = "<group>"; };
+		DFD903362115EE6800CDBDB7 /* SYAudio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SYAudio.h; sourceTree = "<group>"; };
+		DFD903372115EE6800CDBDB7 /* SYAudio.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SYAudio.m; sourceTree = "<group>"; };
+		DFD903382115EE6800CDBDB7 /* SYAudioFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SYAudioFile.h; sourceTree = "<group>"; };
+		DFD903392115EE6800CDBDB7 /* SYAudioFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SYAudioFile.m; sourceTree = "<group>"; };
+		DFD9033A2115EE6800CDBDB7 /* SYAudioTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SYAudioTimer.h; sourceTree = "<group>"; };
+		DFD9033B2115EE6800CDBDB7 /* SYAudioTimer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SYAudioTimer.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -107,7 +109,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DFA1A6A3210A96EC006EFDAA /* libmp3lame.a in Frameworks */,
+				DF4B8A472115776F00448E92 /* libc++.tbd in Frameworks */,
+				DFD9033C2115EE6900CDBDB7 /* libmp3lame.a in Frameworks */,
 				DF0E8B4920CB9750009D729A /* AudioToolbox.framework in Frameworks */,
 				DF0E8B4720CB9741009D729A /* AVFoundation.framework in Frameworks */,
 			);
@@ -160,8 +163,8 @@
 				A7642D681DDEFE0300A73CA7 /* ViewController.m */,
 				A7D9F3441DE2900D0056DB43 /* LocalViewController.h */,
 				A7D9F3451DE2900D0056DB43 /* LocalViewController.m */,
+				DFD903322115EE6800CDBDB7 /* SYAudio */,
 				DFA1A683210A96E6006EFDAA /* images */,
-				DFD2C8D41F06904400E0016B /* SYAudio */,
 				A7D9F3421DE28FE80056DB43 /* BestRegards.mp3 */,
 				A7642D611DDEFE0300A73CA7 /* Supporting Files */,
 			);
@@ -186,7 +189,8 @@
 				A7642D7B1DDEFE0400A73CA7 /* DemoAudioTests.m */,
 				A7642D7D1DDEFE0400A73CA7 /* Info.plist */,
 			);
-			path = DemoAudioTests;
+			name = DemoAudioTests;
+			path = DemoAudio/DemoAudioTests;
 			sourceTree = "<group>";
 		};
 		A7642D851DDEFE0400A73CA7 /* DemoAudioUITests */ = {
@@ -201,6 +205,7 @@
 		DF0E8B4520CB9741009D729A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				DF4B8A462115776F00448E92 /* libc++.tbd */,
 				DF0E8B4820CB9750009D729A /* AudioToolbox.framework */,
 				DF0E8B4620CB9741009D729A /* AVFoundation.framework */,
 			);
@@ -228,28 +233,27 @@
 			path = images;
 			sourceTree = "<group>";
 		};
-		DFA1A6A0210A96EC006EFDAA /* LameUitls */ = {
+		DFD903322115EE6800CDBDB7 /* SYAudio */ = {
 			isa = PBXGroup;
 			children = (
-				DFA1A6A1210A96EC006EFDAA /* lame.h */,
-				DFA1A6A2210A96EC006EFDAA /* libmp3lame.a */,
+				DFD903332115EE6800CDBDB7 /* LameUitls */,
+				DFD903362115EE6800CDBDB7 /* SYAudio.h */,
+				DFD903372115EE6800CDBDB7 /* SYAudio.m */,
+				DFD903382115EE6800CDBDB7 /* SYAudioFile.h */,
+				DFD903392115EE6800CDBDB7 /* SYAudioFile.m */,
+				DFD9033A2115EE6800CDBDB7 /* SYAudioTimer.h */,
+				DFD9033B2115EE6800CDBDB7 /* SYAudioTimer.m */,
 			);
-			path = LameUitls;
+			path = SYAudio;
 			sourceTree = "<group>";
 		};
-		DFD2C8D41F06904400E0016B /* SYAudio */ = {
+		DFD903332115EE6800CDBDB7 /* LameUitls */ = {
 			isa = PBXGroup;
 			children = (
-				DFA1A6A0210A96EC006EFDAA /* LameUitls */,
-				DFD2C8E41F06904400E0016B /* SYAudio.h */,
-				DFD2C8E51F06904400E0016B /* SYAudio.m */,
-				DFD2C8E61F06904400E0016B /* SYAudioFile.h */,
-				DFD2C8E71F06904400E0016B /* SYAudioFile.m */,
-				DFD2C8E81F06904400E0016B /* SYAudioTimer.h */,
-				DFD2C8E91F06904400E0016B /* SYAudioTimer.m */,
+				DFD903342115EE6800CDBDB7 /* lame.h */,
+				DFD903352115EE6800CDBDB7 /* libmp3lame.a */,
 			);
-			name = SYAudio;
-			path = ../../SYAudio;
+			path = LameUitls;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -398,10 +402,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DFD2C8F91F06904400E0016B /* SYAudioFile.m in Sources */,
-				DFD2C8F81F06904400E0016B /* SYAudio.m in Sources */,
+				DFD9033E2115EE6900CDBDB7 /* SYAudioFile.m in Sources */,
+				DFD9033D2115EE6900CDBDB7 /* SYAudio.m in Sources */,
 				A7642D691DDEFE0300A73CA7 /* ViewController.m in Sources */,
-				DFD2C8FA1F06904400E0016B /* SYAudioTimer.m in Sources */,
+				DFD9033F2115EE6900CDBDB7 /* SYAudioTimer.m in Sources */,
 				A7D9F3461DE2900D0056DB43 /* LocalViewController.m in Sources */,
 				A7642D661DDEFE0300A73CA7 /* AppDelegate.m in Sources */,
 				A7642D631DDEFE0300A73CA7 /* main.m in Sources */,
@@ -495,7 +499,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -533,7 +537,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -546,9 +550,12 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = 5JH8ZFBFJD;
+				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = DemoAudio/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/DemoAudio/SYAudio/LameUitls";
+				OTHER_LDFLAGS = "-all_load";
 				PRODUCT_BUNDLE_IDENTIFIER = com.herman.DemoAudio;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -559,9 +566,12 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = 5JH8ZFBFJD;
+				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = DemoAudio/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/DemoAudio/SYAudio/LameUitls";
+				OTHER_LDFLAGS = "-all_load";
 				PRODUCT_BUNDLE_IDENTIFIER = com.herman.DemoAudio;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
