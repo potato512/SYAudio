@@ -16,7 +16,6 @@
 		A7642D7C1DDEFE0400A73CA7 /* DemoAudioTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A7642D7B1DDEFE0400A73CA7 /* DemoAudioTests.m */; };
 		A7642D871DDEFE0400A73CA7 /* DemoAudioUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = A7642D861DDEFE0400A73CA7 /* DemoAudioUITests.m */; };
 		A7D9F3431DE28FE80056DB43 /* BestRegards.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = A7D9F3421DE28FE80056DB43 /* BestRegards.mp3 */; };
-		A7D9F3461DE2900D0056DB43 /* LocalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A7D9F3451DE2900D0056DB43 /* LocalViewController.m */; };
 		DF0E8B4720CB9741009D729A /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF0E8B4620CB9741009D729A /* AVFoundation.framework */; };
 		DF0E8B4920CB9750009D729A /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF0E8B4820CB9750009D729A /* AudioToolbox.framework */; };
 		DF4B8A472115776F00448E92 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = DF4B8A462115776F00448E92 /* libc++.tbd */; };
@@ -38,6 +37,8 @@
 		DFD9033D2115EE6900CDBDB7 /* SYAudio.m in Sources */ = {isa = PBXBuildFile; fileRef = DFD903372115EE6800CDBDB7 /* SYAudio.m */; };
 		DFD9033E2115EE6900CDBDB7 /* SYAudioFile.m in Sources */ = {isa = PBXBuildFile; fileRef = DFD903392115EE6800CDBDB7 /* SYAudioFile.m */; };
 		DFD9033F2115EE6900CDBDB7 /* SYAudioTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = DFD9033B2115EE6800CDBDB7 /* SYAudioTimer.m */; };
+		DFD90342211611B400CDBDB7 /* SYAudioRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = DFD90341211611B400CDBDB7 /* SYAudioRecord.m */; };
+		DFD90345211611C300CDBDB7 /* SYAudioPlay.m in Sources */ = {isa = PBXBuildFile; fileRef = DFD90344211611C300CDBDB7 /* SYAudioPlay.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -75,8 +76,6 @@
 		A7642D861DDEFE0400A73CA7 /* DemoAudioUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DemoAudioUITests.m; sourceTree = "<group>"; };
 		A7642D881DDEFE0400A73CA7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A7D9F3421DE28FE80056DB43 /* BestRegards.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = BestRegards.mp3; sourceTree = "<group>"; };
-		A7D9F3441DE2900D0056DB43 /* LocalViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocalViewController.h; sourceTree = "<group>"; };
-		A7D9F3451DE2900D0056DB43 /* LocalViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocalViewController.m; sourceTree = "<group>"; };
 		DF0E8B4620CB9741009D729A /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		DF0E8B4820CB9750009D729A /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		DF4B8A462115776F00448E92 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
@@ -102,6 +101,11 @@
 		DFD903392115EE6800CDBDB7 /* SYAudioFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SYAudioFile.m; sourceTree = "<group>"; };
 		DFD9033A2115EE6800CDBDB7 /* SYAudioTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SYAudioTimer.h; sourceTree = "<group>"; };
 		DFD9033B2115EE6800CDBDB7 /* SYAudioTimer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SYAudioTimer.m; sourceTree = "<group>"; };
+		DFD90340211611B400CDBDB7 /* SYAudioRecord.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SYAudioRecord.h; sourceTree = "<group>"; };
+		DFD90341211611B400CDBDB7 /* SYAudioRecord.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SYAudioRecord.m; sourceTree = "<group>"; };
+		DFD90343211611C300CDBDB7 /* SYAudioPlay.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SYAudioPlay.h; sourceTree = "<group>"; };
+		DFD90344211611C300CDBDB7 /* SYAudioPlay.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SYAudioPlay.m; sourceTree = "<group>"; };
+		DFD90349211612FA00CDBDB7 /* SYAudioProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SYAudioProtocol.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -161,8 +165,6 @@
 				A7642D651DDEFE0300A73CA7 /* AppDelegate.m */,
 				A7642D671DDEFE0300A73CA7 /* ViewController.h */,
 				A7642D681DDEFE0300A73CA7 /* ViewController.m */,
-				A7D9F3441DE2900D0056DB43 /* LocalViewController.h */,
-				A7D9F3451DE2900D0056DB43 /* LocalViewController.m */,
 				DFD903322115EE6800CDBDB7 /* SYAudio */,
 				DFA1A683210A96E6006EFDAA /* images */,
 				A7D9F3421DE28FE80056DB43 /* BestRegards.mp3 */,
@@ -239,6 +241,11 @@
 				DFD903332115EE6800CDBDB7 /* LameUitls */,
 				DFD903362115EE6800CDBDB7 /* SYAudio.h */,
 				DFD903372115EE6800CDBDB7 /* SYAudio.m */,
+				DFD90340211611B400CDBDB7 /* SYAudioRecord.h */,
+				DFD90341211611B400CDBDB7 /* SYAudioRecord.m */,
+				DFD90343211611C300CDBDB7 /* SYAudioPlay.h */,
+				DFD90344211611C300CDBDB7 /* SYAudioPlay.m */,
+				DFD90349211612FA00CDBDB7 /* SYAudioProtocol.h */,
 				DFD903382115EE6800CDBDB7 /* SYAudioFile.h */,
 				DFD903392115EE6800CDBDB7 /* SYAudioFile.m */,
 				DFD9033A2115EE6800CDBDB7 /* SYAudioTimer.h */,
@@ -402,13 +409,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DFD90345211611C300CDBDB7 /* SYAudioPlay.m in Sources */,
 				DFD9033E2115EE6900CDBDB7 /* SYAudioFile.m in Sources */,
 				DFD9033D2115EE6900CDBDB7 /* SYAudio.m in Sources */,
 				A7642D691DDEFE0300A73CA7 /* ViewController.m in Sources */,
 				DFD9033F2115EE6900CDBDB7 /* SYAudioTimer.m in Sources */,
-				A7D9F3461DE2900D0056DB43 /* LocalViewController.m in Sources */,
 				A7642D661DDEFE0300A73CA7 /* AppDelegate.m in Sources */,
 				A7642D631DDEFE0300A73CA7 /* main.m in Sources */,
+				DFD90342211611B400CDBDB7 /* SYAudioRecord.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

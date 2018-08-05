@@ -8,20 +8,21 @@
 
 #import "ViewController.h"
 #import "SYAudio.h"
-#import "LocalViewController.h"
 
 @interface ViewController () <UITableViewDataSource, UITableViewDelegate, SYAudioDelegate>
 
 @property (nonatomic, strong) NSString *filePath;
+@property (nonatomic, strong) NSString *filePathMP3;
 
-@property (nonatomic, strong) UITableView *mainTableView;
-@property (nonatomic, strong) NSMutableArray *mainArray;
+@property (nonatomic, strong) UITableView *tableView;
+@property (nonatomic, strong) NSMutableArray *array;
 
-@property (nonatomic, assign) NSTimeInterval audioRecorderTime;          // 录音时长
+@property (nonatomic, strong) UILabel *label;
+@property (nonatomic, strong) UIView *buttonView;
+
+@property (nonatomic, assign) BOOL isLimitTime;
 @property (nonatomic, strong) UIView *imgView;                           // 录音音量图像父视图
 @property (nonatomic, strong) UIImageView *audioRecorderVoiceImgView;    // 录音音量图像
-
-@property (nonatomic, strong) NSString *filePathMP3;
 
 @end
 
@@ -32,13 +33,6 @@
     // Do any additional setup after loading the view, typically from a nib.
     
     self.navigationItem.title = @"录音及播放音频";
-    
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"local" style:UIBarButtonItemStyleDone target:self action:@selector(localItemClick:)];
-    
-    UIBarButtonItem *clearItem = [[UIBarButtonItem alloc] initWithTitle:@"clear" style:UIBarButtonItemStyleDone target:self action:@selector(clearItemClick:)];
-    UIBarButtonItem *stopItem = [[UIBarButtonItem alloc] initWithTitle:@"stop" style:UIBarButtonItemStyleDone target:self action:@selector(stopItemClick:)];
-    UIBarButtonItem *playItem = [[UIBarButtonItem alloc] initWithTitle:@"play" style:UIBarButtonItemStyleDone target:self action:@selector(playItemClick:)];
-    self.navigationItem.rightBarButtonItems = @[clearItem, stopItem, playItem];
     
     [self setUI];
 }
@@ -62,31 +56,66 @@
 
 - (void)setUI
 {
-    self.mainTableView = [[UITableView alloc] initWithFrame:CGRectMake(0.0, 0.0, CGRectGetWidth(self.view.bounds), CGRectGetHeight(self.view.bounds) - 10.0 - 40.0 - 10.0) style:UITableViewStylePlain];
-    [self.view addSubview:self.mainTableView];
-    self.mainTableView.tableFooterView = [[UIView alloc] init];
-    self.mainTableView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
-    self.mainTableView.backgroundColor = [UIColor clearColor];
-    self.mainTableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
-    self.mainTableView.separatorInset = UIEdgeInsetsZero;
-    self.mainTableView.layoutMargins = UIEdgeInsetsZero;
-    self.mainTableView.delegate = self;
-    self.mainTableView.dataSource = self;
+    self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
+    [self.view addSubview:self.tableView];
+    self.tableView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
+    self.tableView.backgroundColor = [UIColor clearColor];
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
+    self.tableView.separatorInset = UIEdgeInsetsZero;
+    self.tableView.layoutMargins = UIEdgeInsetsZero;
+    self.tableView.delegate = self;
+    self.tableView.dataSource = self;
     //
-    UIButton *headerButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0, 0.0, self.view.frame.size.width, 44.0)];
-    [headerButton setTitle:@"开始录音" forState:UIControlStateNormal];
-    [headerButton setTitle:@"停止录音" forState:UIControlStateSelected];
+    self.buttonView = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, self.view.frame.size.width, (60.0 + 10.0 + 44.0 + 10.0 + 44.0 + 10.0 + 44.0 + 10.0 + 44.0 + 10.0))];
+    self.buttonView.backgroundColor = [UIColor yellowColor];
+    //
+    self.label = [[UILabel alloc] initWithFrame:CGRectMake(10.0, 0.0, (self.view.frame.size.width - 20.0), 60.0)];
+    [self.buttonView addSubview:self.label];
+    self.label.adjustsFontSizeToFitWidth = YES;
+    self.label.numberOfLines = 2;
+    UIView *currentView = self.label;
+    //
+    NSArray *titles = @[@"播放本地文件", @"播放网络文件", @"播放压缩文件", @"停止播放"];
+    NSInteger number = 4;
+    CGFloat widthButton = ((self.buttonView.frame.size.width - 10.0 * 5) / number);
+    for (int i = 0; i < titles.count; i++) {
+        NSString *title = titles[i];
+        UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake((i * (widthButton + 10.0) + 10.0), (60.0 + 10.0), widthButton, 44.0)];
+        button.backgroundColor = [UIColor colorWithWhite:0.5 alpha:0.3];
+        button.titleLabel.adjustsFontSizeToFitWidth = YES;
+        [button setTitle:title forState:UIControlStateNormal];
+        [button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [button setTitleColor:[UIColor redColor] forState:UIControlStateHighlighted];
+        [button addTarget:self action:@selector(buttonClick:) forControlEvents:UIControlEventTouchUpInside];
+        button.tag = i;
+        [self.buttonView addSubview:button];
+        
+        currentView = button;
+    }
+    //
+    UIButton *headerButton = [[UIButton alloc] initWithFrame:CGRectMake(10.0, (currentView.frame.origin.y + currentView.frame.size.height + 10.0), (self.view.frame.size.width - 20.0), 44.0)];
+    [self.buttonView addSubview:headerButton];
+    headerButton.backgroundColor = [UIColor colorWithWhite:0.5 alpha:0.3];
+    [headerButton setTitle:@"开始录音（不显示录音音量）" forState:UIControlStateNormal];
+    [headerButton setTitle:@"停止录音（不显示录音音量）" forState:UIControlStateSelected];
     [headerButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [headerButton setTitleColor:[UIColor redColor] forState:UIControlStateHighlighted];
-    [headerButton addTarget:self action:@selector(buttonClick:) forControlEvents:UIControlEventTouchUpInside];
+    [headerButton setTitleColor:[UIColor redColor] forState:UIControlStateSelected];
+    [headerButton addTarget:self action:@selector(hideButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     headerButton.selected = NO;
-    self.mainTableView.tableHeaderView = headerButton;
-    
-    
-    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.view addSubview:button];
-    button.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
-    button.frame = CGRectMake(10.0, (CGRectGetHeight(self.view.bounds) - 10.0 - 40.0), (CGRectGetWidth(self.view.bounds) - 10.0 * 2), 40.0);
+    currentView = headerButton;
+    //
+    UIButton *timeButton = [[UIButton alloc] initWithFrame:CGRectMake(10.0, (currentView.frame.origin.y + currentView.frame.size.height + 10.0), (self.view.frame.size.width - 20.0), 44.0)];
+    timeButton.backgroundColor = [UIColor colorWithWhite:0.5 alpha:0.3];
+    [timeButton setTitle:@"开始录音（限时录音）" forState:UIControlStateNormal];
+    [timeButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [timeButton setTitleColor:[UIColor redColor] forState:UIControlStateHighlighted];
+    [timeButton addTarget:self action:@selector(timeButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+    timeButton.selected = NO;
+    [self.buttonView addSubview:timeButton];
+    currentView = timeButton;
+    //
+    UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(10.0, (currentView.frame.origin.y + currentView.frame.size.height + 10.0), (self.view.frame.size.width - 20.0), 44.0)];
+    [self.buttonView addSubview:button];
     button.backgroundColor = [UIColor colorWithWhite:0.5 alpha:0.3];
     [button setTitle:@"按下开始录音" forState:UIControlStateNormal];
     [button setTitle:@"正在录音 释放停止录音" forState:UIControlStateHighlighted];
@@ -96,46 +125,64 @@
     [button addTarget:self action:@selector(recordStartButtonDown:) forControlEvents:UIControlEventTouchDown];
     [button addTarget:self action:@selector(recordStopButtonUp:) forControlEvents:UIControlEventTouchUpInside];
     [button addTarget:self action:@selector(recordStopButtonExit:) forControlEvents:UIControlEventTouchDragExit];
+    //
+    self.tableView.tableFooterView = self.buttonView;
 }
 
 #pragma mark - 交互 
 
-- (void)localItemClick:(UIBarButtonItem *)item
+- (void)buttonClick:(UIButton *)button
 {
-    LocalViewController *nextVC = [[LocalViewController alloc] init];
-    [self.navigationController pushViewController:nextVC animated:YES];
-}
-
-- (void)clearItemClick:(UIBarButtonItem *)item
-{
-    if (self.mainArray)
-    {
-        for (NSDictionary *dict in self.mainArray)
-        {
-            NSString *filePath = dict[@"FilePath"];
-            [SYAudioFile SYAudioDeleteFileWithFilePath:filePath];
-        }
-        
-        [self.mainArray removeAllObjects];
-        
-        [self.mainTableView reloadData];
+    if (button.tag == 0) {
+        // 播放本地文件
+        NSString *filePath = [[NSBundle mainBundle] pathForResource:@"BestRegards" ofType:@"mp3"];
+        [SYAudio shareAudio].audioPlayer.delegate = self;
+        [[SYAudio shareAudio].audioPlayer playerStart:filePath];
+    } else if (button.tag == 1) {
+        // 播放网络文件
+        // NSString *filePath = @"http://www.runoob.com/try/demo_source/horse.mp3";
+        NSString *filePath = @"http://download.lingyongqian.cn//music//ForElise.mp3";
+        [SYAudio shareAudio].audioPlayer.delegate = self;
+        [[SYAudio shareAudio].audioPlayer playerStart:filePath];
+    } else if (button.tag == 2) {
+        // 播放压缩文件
+        [SYAudio shareAudio].audioPlayer.delegate = self;
+        [[SYAudio shareAudio].audioPlayer playerStart:self.filePathMP3];
+    } else if (button.tag == 3) {
+        // 停止播放
+        [[SYAudio shareAudio].audioPlayer playerPause];
     }
 }
 
-- (void)playItemClick:(UIBarButtonItem *)item
+- (void)hideButtonClick:(UIButton *)button
 {
-    [self playRecorder];
+    button.selected = !button.selected;
+    if (button.selected) {
+        [SYAudio shareAudio].audioRecorder.monitorVoice = NO;
+        self.filePath = [SYAudioFile SYAudioDefaultFilePath:nil];
+        [SYAudio shareAudio].audioRecorder.delegate = self;
+        [[SYAudio shareAudio].audioRecorder recorderStart:self.filePath];
+    } else {
+        [self saveRecorder];
+    }
 }
 
-- (void)stopItemClick:(UIBarButtonItem *)item
+- (void)timeButtonClick:(UIButton *)button
 {
-    [self stopRecorder];
+    self.isLimitTime = YES;
+    
+    self.filePath = [SYAudioFile SYAudioDefaultFilePath:nil];
+    [SYAudio shareAudio].audioRecorder.delegate = self;
+    [SYAudio shareAudio].audioRecorder.totalTime = 10.0;
+    [[SYAudio shareAudio].audioRecorder recorderStart:self.filePath];
 }
 
 - (void)recordStartButtonDown:(UIButton *)button
 {
-    [SYAudio shareAudio].monitorVoice = YES;
-    [self startRecorder];
+    [SYAudio shareAudio].audioRecorder.monitorVoice = YES;
+    self.filePath = [SYAudioFile SYAudioDefaultFilePath:nil];
+    [SYAudio shareAudio].audioRecorder.delegate = self;
+    [[SYAudio shareAudio].audioRecorder recorderStart:self.filePath];
 }
 
 - (void)recordStopButtonUp:(UIButton *)button
@@ -148,36 +195,15 @@
     [self saveRecorder];
 }
 
-- (void)buttonClick:(UIButton *)button
-{
-    button.selected = !button.selected;
-    if (button.selected) {
-        [SYAudio shareAudio].monitorVoice = NO;
-        [self startRecorder];
-    } else {
-        [self saveRecorder];
-    }
-}
-
-#pragma mark - 音频处理方法
-
-// 开始录音
-- (void)startRecorder
-{
-    self.filePath = [SYAudioFile SYAudioDefaultFilePath:nil];
-    [SYAudio shareAudio].delegate = self;
-    [[SYAudio shareAudio] audioRecorderStartWithFilePath:self.filePath];
-}
-
 // 停止录音，并保存
 - (void)saveRecorder
 {
-    [[SYAudio shareAudio] audioRecorderStop];
+    [[SYAudio shareAudio].audioRecorder recorderStop];
     
     // 保存音频信息
-    if (!self.mainArray)
+    if (!self.array)
     {
-        self.mainArray = [[NSMutableArray alloc] init];
+        self.array = [[NSMutableArray alloc] init];
     }
     NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
     [dict setValue:self.filePath forKey:@"FilePath"];
@@ -185,42 +211,26 @@
     [dict setValue:fileName forKey:@"FileName"];
     long long fileSize = [SYAudioFile SYAudioGetFileSizeWithFilePath:self.filePath];
     [dict setValue:@(fileSize) forKey:@"FileSize"];
-    NSTimeInterval fileTime = [[SYAudio shareAudio] durationAudioRecorderWithFilePath:self.filePath];
+    NSTimeInterval fileTime = [[SYAudio shareAudio].audioRecorder recorderDurationWithFilePath:self.filePath];
     [dict setValue:@(fileTime) forKey:@"FileTime"];
-    [self.mainArray addObject:dict];
+    [self.array addObject:dict];
     
     // 刷新列表
-    [self.mainTableView reloadData];
-}
-
-// 录音开始播放，或停止
-- (void)playRecorder
-{
-    // 未压缩文件
-//    [[SYAudio shareAudio] audioPlayWithFilePath:self.filePath];
-    // 压缩后文件
-    [[SYAudio shareAudio] audioPlayWithFilePath:self.filePathMP3];
-}
-
-// 录音停止播放
-- (void)stopRecorder
-{
-    [[SYAudio shareAudio] audioStop];
+    [self.tableView reloadData];
 }
 
 #pragma mark - UITableViewDataSource, UITableViewDelegate
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return self.mainArray.count;
+    return self.array.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *const identifier = @"UITableViewCell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
-    if (cell == nil)
-    {
+    if (cell == nil) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:identifier];
         
         cell.separatorInset = UIEdgeInsetsMake(0.0, 0.0, 0.0, 0.0);
@@ -232,7 +242,7 @@
         cell.detailTextLabel.adjustsFontSizeToFitWidth = YES;
     }
     
-    NSDictionary *dict = self.mainArray[indexPath.row];
+    NSDictionary *dict = self.array[indexPath.row];
     NSString *fileName = dict[@"FileName"];
     NSNumber *fileSize = dict[@"FileSize"];
     NSNumber *fileTime = dict[@"FileTime"];
@@ -248,10 +258,11 @@
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    NSDictionary *dict = self.mainArray[indexPath.row];
+    NSDictionary *dict = self.array[indexPath.row];
     NSString *filePath = dict[@"FilePath"];
-    
-    [[SYAudio shareAudio] audioPlayWithFilePath:filePath];
+    //
+    [SYAudio shareAudio].audioPlayer.delegate = self;
+    [[SYAudio shareAudio].audioPlayer playerStart:filePath];
 }
 
 
@@ -263,29 +274,37 @@
 - (void)recordBegined
 {
     NSLog(@"%s", __func__);
+    self.label.text = @"开始录音";
     
-    // 录音音量显示 75*111
-    UIWindow *window = [[UIApplication sharedApplication] keyWindow];
-    //
-    self.imgView = [[UIView alloc] initWithFrame:CGRectMake((window.frame.size.width - 120) / 2, (window.frame.size.height - 120) / 2, 120, 120)];
-    [window addSubview:self.imgView];
-    [self.imgView.layer setCornerRadius:10.0];
-    [self.imgView.layer setBackgroundColor:[UIColor blackColor].CGColor];
-    [self.imgView setAlpha:0.8];
-    //
-    self.audioRecorderVoiceImgView = [[UIImageView alloc] initWithFrame:CGRectMake((self.imgView.frame.size.width - 60) / 2, (self.imgView.frame.size.height - 60 * 111 / 75) / 2, 60, 60 * 111 / 75)];
-    [self.imgView addSubview:self.audioRecorderVoiceImgView];
-    [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_01.png"]];
-    [self.audioRecorderVoiceImgView setBackgroundColor:[UIColor clearColor]];
+    if ([SYAudio shareAudio].audioRecorder.monitorVoice) {
+        // 录音音量显示 75*111
+        UIWindow *window = [[UIApplication sharedApplication] keyWindow];
+        //
+        self.imgView = [[UIView alloc] initWithFrame:CGRectMake((window.frame.size.width - 120) / 2, (window.frame.size.height - 120) / 2, 120, 120)];
+        [window addSubview:self.imgView];
+        [self.imgView.layer setCornerRadius:10.0];
+        [self.imgView.layer setBackgroundColor:[UIColor blackColor].CGColor];
+        [self.imgView setAlpha:0.8];
+        //
+        self.audioRecorderVoiceImgView = [[UIImageView alloc] initWithFrame:CGRectMake((self.imgView.frame.size.width - 60) / 2, (self.imgView.frame.size.height - 60 * 111 / 75) / 2, 60, 60 * 111 / 75)];
+        [self.imgView addSubview:self.audioRecorderVoiceImgView];
+        [self.audioRecorderVoiceImgView setImage:[UIImage imageNamed:@"record_animate_01.png"]];
+        [self.audioRecorderVoiceImgView setBackgroundColor:[UIColor clearColor]];
+    }
 }
 
 /// 停止录音
 - (void)recordFinshed
 {
     NSLog(@"%s", __func__);
+    self.label.text = @"完成录音";
+    if (self.isLimitTime) {
+        self.isLimitTime = NO;
+        [self saveRecorder];
+    }
     
     // 移除音量图标
-    if (self.audioRecorderVoiceImgView)
+    if (self.audioRecorderVoiceImgView && [SYAudio shareAudio].audioRecorder.monitorVoice)
     {
         [self.audioRecorderVoiceImgView setHidden:YES];
         [self.audioRecorderVoiceImgView setImage:nil];
@@ -301,6 +320,7 @@
 - (void)recordingUpdateVoice:(double)lowPassResults
 {
     NSLog(@"%s", __func__);
+    self.label.text = [NSString stringWithFormat:@"正在录音：%f", lowPassResults];
     
     if (0 < lowPassResults <= 0.06)
     {
@@ -365,6 +385,7 @@
 {
     NSLog(@"%s", __func__);
     NSLog(@"录音倒计时：%f, 是否录音倒计时：%ld", time, isTimer);
+    self.label.text = [NSString stringWithFormat:@"录音倒计时：%f, 是否录音倒计时：%ld", time, isTimer];
 }
 
 #pragma mark 压缩
@@ -373,6 +394,7 @@
 - (void)recordBeginConvert
 {
     NSLog(@"%s", __func__);
+    self.label.text = @"正在压缩文件";
 }
 
 /// 结束压缩录音
@@ -381,16 +403,17 @@
     NSLog(@"%s", __func__);
     NSLog(@"%@", filePath);
     self.filePathMP3 = filePath;
+    self.label.text = @"完成文件压缩";
 }
-
-
 
 #pragma mark 播放
 
 /// 开始播放音频
-- (void)audioPlayBegined
+- (void)audioPlayBegined:(AVPlayerItemStatus)state
 {
     NSLog(@"%s", __func__);
+    NSLog(@"state = %@", @(state));
+    self.label.text = [NSString stringWithFormat:@"准备播放 state = %@", @(state)];
 }
 
 /// 正在播放音频（总时长，当前时长）
@@ -398,12 +421,14 @@
 {
     NSLog(@"%s", __func__);
     NSLog(@"播放总时长：%f, 当前播放时间：%f", totalTime, currentTime);
+    self.label.text = [NSString stringWithFormat:@"正在播放\n播放总时长：%f, 当前播放时间：%f", totalTime, currentTime];
 }
 
 /// 结束播放音频
 - (void)audioPlayFinished
 {
     NSLog(@"%s", __func__);
+    self.label.text = [NSString stringWithFormat:@"播放完成"];
 }
 
 
