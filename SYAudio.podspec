@@ -7,7 +7,8 @@ Pod::Spec.new do |s|
   s.author       = { "herman" => "zhangsy757@163.com" }
   s.platform     = :ios, "9.0"
   s.source       = { :git => "https://github.com/potato512/SYAudio.git", :tag => "#{s.version}" }
-  s.source_files  = "SYAudio/*.{h,m}", "SYAudio/LameUitls/*.{h,a}"
+  s.source_files  = "SYAudio/*.{h,m}", "SYAudio/LameUitls/*.{h}"
+  s.vendored_libraries = 'SYAudio/LameUitls/*.a'
   s.frameworks   = "AVFoundation", "AudioToolbox", "UIKit", "Foundation"
   s.requires_arc = true
 end
