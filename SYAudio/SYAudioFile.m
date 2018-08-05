@@ -10,7 +10,7 @@
 
 @implementation SYAudioFile
 
-/// 录音文件保存路径（fileName 如：20180722.aac）
+/// 录音文件保存路径（fileName 如：20180722.aac，或20180722.caf）
 + (NSString *)SYAudioDefaultFilePath:(NSString *)fileName
 {
     NSString *fileNameTmp = fileName;
@@ -20,7 +20,7 @@
         [dateFormatter setDateFormat:@"YYYYMMddHHmmss"];
         // 文件名称（aac, caf）
         fileNameTmp = [dateFormatter stringFromDate:currentDate];
-        fileNameTmp = [NSString stringWithFormat:@"%@.aac", fileNameTmp];
+        fileNameTmp = [NSString stringWithFormat:@"%@.caf", fileNameTmp];
     }
     NSString *tmpPath = [NSHomeDirectory() stringByAppendingPathComponent:@"tmp"];
     NSString *filePath = [tmpPath stringByAppendingFormat:@"/%@", fileNameTmp];
