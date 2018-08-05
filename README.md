@@ -1,7 +1,7 @@
 # SYAudio
 音频的录制与播放，进行封装后的单例工具组件。
 * 使用AVAudioRecorder进行录音
-* 使用AVAudioPlayer进行音频播放
+* 使用AVPlayer进行音频播放
 
 # 效果图
 ![audioImage.gif](./audioImage.gif)
