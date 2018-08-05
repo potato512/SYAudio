@@ -40,10 +40,12 @@
 }
 
 /// 开始播放
-- (void)playerStart:(NSString *)filePath
+- (void)playerStart:(NSString *)filePath complete:(void (^)(BOOL isFailed))complete
 {
     if (!filePath || filePath.length <= 0) {
-        [[[UIAlertView alloc] initWithTitle:nil message:@"音频文件地址无效" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil] show];
+        if (complete) {
+            complete(YES);
+        }
         return;
     }
     

@@ -78,10 +78,12 @@
 #pragma mark - 录音
 
 /// 开始录音
-- (void)recorderStart:(NSString *)filePath
+- (void)recorderStart:(NSString *)filePath complete:(void (^)(BOOL isFailed))complete
 {
     if (!filePath || filePath.length <= 0) {
-        [[[UIAlertView alloc] initWithTitle:nil message:@"录音文件地址无效" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil] show];
+        if (complete) {
+            complete(YES);
+        }
         return;
     }
     
@@ -275,7 +277,8 @@
     }
     
     @try {
-        int read, write;
+        int read;
+        int write;
         
         FILE *pcm = fopen([cafFilePath cStringUsingEncoding:1], "rb");  //source 被转换的音频文件位置
         fseek(pcm, 4 * 1024, SEEK_CUR);                                   //skip file header
@@ -336,21 +339,6 @@
 }
 
 - (void)audioRecorderBeginInterruption:(AVAudioRecorder *)recorder
-{
-    [self recorderStopWhileError];
-}
-
-- (void)audioRecorderEndInterruption:(AVAudioRecorder *)recorder withOptions:(NSUInteger)flags
-{
-    [self recorderStopWhileError];
-}
-
-- (void)audioRecorderEndInterruption:(AVAudioRecorder *)recorder withFlags:(NSUInteger)flags
-{
-    [self recorderStopWhileError];
-}
-
-- (void)audioRecorderEndInterruption:(AVAudioRecorder *)recorder
 {
     [self recorderStopWhileError];
 }

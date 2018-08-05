@@ -27,7 +27,7 @@
 #pragma mark - 录音
 
 /// 开始录音（默认格式为：xxx.caf）
-- (void)recorderStart:(NSString *)filePath;
+- (void)recorderStart:(NSString *)filePath complete:(void (^)(BOOL isFailed))complete;
 
 /// 停止录音
 - (void)recorderStop;

@@ -15,7 +15,7 @@
 @property (nonatomic, weak) id<SYAudioDelegate> delegate;
 
 /// 开始播放
-- (void)playerStart:(NSString *)filePath;
+- (void)playerStart:(NSString *)filePath complete:(void (^)(BOOL isFailed))complete;
 
 /// 暂停播放
 - (void)playerPause;

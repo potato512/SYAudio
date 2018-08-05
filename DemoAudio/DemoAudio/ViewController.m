@@ -137,17 +137,41 @@
         // 播放本地文件
         NSString *filePath = [[NSBundle mainBundle] pathForResource:@"BestRegards" ofType:@"mp3"];
         [SYAudio shareAudio].audioPlayer.delegate = self;
-        [[SYAudio shareAudio].audioPlayer playerStart:filePath];
+        [[SYAudio shareAudio].audioPlayer playerStart:filePath complete:^(BOOL isFailed) {
+            if (isFailed) {
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:@"音频文件地址无效" preferredStyle:UIAlertControllerStyleAlert];
+                [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
+                    [self dismissViewControllerAnimated:YES completion:NULL];
+                }]];
+                [self presentViewController:alert animated:YES completion:NULL];
+            }
+        }];
     } else if (button.tag == 1) {
         // 播放网络文件
         // NSString *filePath = @"http://www.runoob.com/try/demo_source/horse.mp3";
         NSString *filePath = @"http://download.lingyongqian.cn//music//ForElise.mp3";
         [SYAudio shareAudio].audioPlayer.delegate = self;
-        [[SYAudio shareAudio].audioPlayer playerStart:filePath];
+        [[SYAudio shareAudio].audioPlayer playerStart:filePath complete:^(BOOL isFailed) {
+            if (isFailed) {
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:@"音频文件地址无效" preferredStyle:UIAlertControllerStyleAlert];
+                [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
+                    [self dismissViewControllerAnimated:YES completion:NULL];
+                }]];
+                [self presentViewController:alert animated:YES completion:NULL];
+            }
+        }];
     } else if (button.tag == 2) {
         // 播放压缩文件
         [SYAudio shareAudio].audioPlayer.delegate = self;
-        [[SYAudio shareAudio].audioPlayer playerStart:self.filePathMP3];
+        [[SYAudio shareAudio].audioPlayer playerStart:self.filePathMP3 complete:^(BOOL isFailed) {
+            if (isFailed) {
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:@"音频文件地址无效" preferredStyle:UIAlertControllerStyleAlert];
+                [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
+                    [self dismissViewControllerAnimated:YES completion:NULL];
+                }]];
+                [self presentViewController:alert animated:YES completion:NULL];
+            }
+        }];
     } else if (button.tag == 3) {
         // 停止播放
         [[SYAudio shareAudio].audioPlayer playerPause];
@@ -161,7 +185,15 @@
         [SYAudio shareAudio].audioRecorder.monitorVoice = NO;
         self.filePath = [SYAudioFile SYAudioDefaultFilePath:nil];
         [SYAudio shareAudio].audioRecorder.delegate = self;
-        [[SYAudio shareAudio].audioRecorder recorderStart:self.filePath];
+        [[SYAudio shareAudio].audioRecorder recorderStart:self.filePath complete:^(BOOL isFailed) {
+            if (isFailed) {
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:@"音频文件地址无效" preferredStyle:UIAlertControllerStyleAlert];
+                [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
+                    [self dismissViewControllerAnimated:YES completion:NULL];
+                }]];
+                [self presentViewController:alert animated:YES completion:NULL];
+            }
+        }];
     } else {
         [self saveRecorder];
     }
@@ -174,7 +206,15 @@
     self.filePath = [SYAudioFile SYAudioDefaultFilePath:nil];
     [SYAudio shareAudio].audioRecorder.delegate = self;
     [SYAudio shareAudio].audioRecorder.totalTime = 10.0;
-    [[SYAudio shareAudio].audioRecorder recorderStart:self.filePath];
+    [[SYAudio shareAudio].audioRecorder recorderStart:self.filePath complete:^(BOOL isFailed) {
+        if (isFailed) {
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:@"音频文件地址无效" preferredStyle:UIAlertControllerStyleAlert];
+            [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
+                [self dismissViewControllerAnimated:YES completion:NULL];
+            }]];
+            [self presentViewController:alert animated:YES completion:NULL];
+        }
+    }];
 }
 
 - (void)recordStartButtonDown:(UIButton *)button
@@ -182,7 +222,15 @@
     [SYAudio shareAudio].audioRecorder.monitorVoice = YES;
     self.filePath = [SYAudioFile SYAudioDefaultFilePath:nil];
     [SYAudio shareAudio].audioRecorder.delegate = self;
-    [[SYAudio shareAudio].audioRecorder recorderStart:self.filePath];
+    [[SYAudio shareAudio].audioRecorder recorderStart:self.filePath complete:^(BOOL isFailed) {
+        if (isFailed) {
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:@"音频文件地址无效" preferredStyle:UIAlertControllerStyleAlert];
+            [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
+                [self dismissViewControllerAnimated:YES completion:NULL];
+            }]];
+            [self presentViewController:alert animated:YES completion:NULL];
+        }
+    }];
 }
 
 - (void)recordStopButtonUp:(UIButton *)button
@@ -262,7 +310,13 @@
     NSString *filePath = dict[@"FilePath"];
     //
     [SYAudio shareAudio].audioPlayer.delegate = self;
-    [[SYAudio shareAudio].audioPlayer playerStart:filePath];
+    [[SYAudio shareAudio].audioPlayer playerStart:filePath complete:^(BOOL isFailed) {
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:@"音频文件地址无效" preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
+            [self dismissViewControllerAnimated:YES completion:NULL];
+        }]];
+        [self presentViewController:alert animated:YES completion:NULL];
+    }];
 }
 
 

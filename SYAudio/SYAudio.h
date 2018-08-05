@@ -50,7 +50,9 @@
  3、录音
  （1）音频处理方法-开始录音
  NSString *filePath = xxxxx;
- [[SYAudio shareAudio].audioRecorder recorderStart:filePath];
+ [[SYAudio shareAudio].audioRecorder recorderStart:filePath complete:^(BOOL isFailed) {
+ 
+ }];
  
  （2）音频处理方法-停止录音
  [[SYAudio shareAudio].audioRecorder recorderStop];
@@ -58,7 +60,9 @@
  4、播放
  （1）音频处理方法-播放音频（本地音频文件，或网络音频文件均可播放）
  NSString *filePath = xxxxx;
- [[SYAudio shareAudio].audioPlayer playerStart:filePath];
+ [[SYAudio shareAudio].audioPlayer playerStart:filePath complete:^(BOOL isFailed) {
+ 
+ }];
  
  （2）音频处理方法-停止音频播放
  [[SYAudio shareAudio].audioPlayer playerPause];
