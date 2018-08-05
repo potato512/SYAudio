@@ -30,10 +30,10 @@
 音量图标显示`YES`，或不显示`NO`
 ```
 // 显示
-[SYAudio shareAudio].showRecorderVoiceStatus = YES;
+[SYAudio shareAudio].audioRecorder.monitorVoice = YES;
 
 // 不显示
-[SYAudio shareAudio].showRecorderVoiceStatus = NO;
+[SYAudio shareAudio].audioRecorder.monitorVoice = NO;
 ```
 
 音频处理方法-开始录音 
@@ -134,7 +134,7 @@ NSString *filePath = xxxxx;
 * 20180805
   * 版本号：1.2.0
   * 功能完善
-  
+
 * 20180804
   * 版本号：1.1.0
   * 功能完善

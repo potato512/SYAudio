@@ -32,14 +32,6 @@
 /// 播放对象
 @property (nonatomic, strong) SYAudioPlay *audioPlayer;
 
-#pragma mark - 播放/停止
-
-///// 音频开始播放或停止
-//- (void)audioPlayWithFilePath:(NSString *)filePath;
-//
-///// 音频播放停止
-//- (void)audioStop;
-
 @end
 
 /*
@@ -48,41 +40,69 @@
  #import "SYAudio.h"
  
  2、属性设置
- // 是否显示录音音量状态图标，默认显示
- [SYAudio shareAudio].showRecorderStatus = NO;
- 
- 3、录音
- （1）定义录音文件路径
- NSString *filePath = [SYAudioFile SYAudioGetFilePathWithDate];
- 
- （2）开始录音
- [button addTarget:self action:@selector(startRecorder:) forControlEvents:UIControlEventTouchDown];
- - (void)startRecorder
- {
-     [[SYAudio shareAudio] audioRecorderStartWithFilePath:filePath];
- }
- 
- （3）停止录音，并保存录音
- [button addTarget:self action:@selector(saveRecorder:) forControlEvents:UIControlEventTouchUpInside];
- [button addTarget:self action:@selector(saveRecorder:) forControlEvents:UIControlEventTouchDragExit];
- // 停止录音，并保存
- - (void)saveRecorder
- {
-     [[SYAudio shareAudio] audioRecorderStop];
- }
- 
- 4、播放录音，或播放音乐文件
- - (void)playRecorder
- {
-     [[SYAudio shareAudio] audioPlayWithFilePath:filePath];
- }
- 
- 5、停止播放录音，或停止播放音乐文件
- - (void)stopRecorder
- {
-     [[SYAudio shareAudio] audioStop];
- }
+ // 是否显示录音音量状态
+[SYAudio shareAudio].audioRecorder.monitorVoice = NO;
+ // 限制录音时长
+ [SYAudio shareAudio].audioRecorder.totalTime = 10.0;
+ // 代理
+ [SYAudio shareAudio].audioRecorder.delegate = self;
 
+ 3、录音
+ （1）音频处理方法-开始录音
+ NSString *filePath = xxxxx;
+ [[SYAudio shareAudio].audioRecorder recorderStart:filePath];
+ 
+ （2）音频处理方法-停止录音
+ [[SYAudio shareAudio].audioRecorder recorderStop];
+ 
+ 4、播放
+ （1）音频处理方法-播放音频（本地音频文件，或网络音频文件均可播放）
+ NSString *filePath = xxxxx;
+ [[SYAudio shareAudio].audioPlayer playerStart:filePath];
+ 
+ （2）音频处理方法-停止音频播放
+ [[SYAudio shareAudio].audioPlayer playerPause];
+
+ 5、实现代理协议
+ (1)录音
+ /// 开始录音
+ - (void)recordBegined
+ { }
+ 
+ /// 停止录音
+ - (void)recordFinshed
+ { }
+ 
+ /// 正在录音中，录音音量监测
+ - (void)recordingUpdateVoice:(double)lowPassResults
+ { }
+ 
+ /// 正中录音中，是否录音倒计时、录音剩余时长
+ - (void)recordingWithResidualTime:(NSTimeInterval)time timer:(BOOL)isTimer
+ { }
+
+ （2）录音文件压缩
+ /// 开始压缩录音
+ - (void)recordBeginConvert
+ { }
+ 
+ /// 结束压缩录音
+ - (void)recordFinshConvert:(NSString *)filePath
+ { }
+ ```
+ 
+ （3）音频文件播放
+ /// 开始播放音频
+ - (void)audioPlayBegined:(AVPlayerItemStatus)state
+ { }
+ 
+ /// 正在播放音频（总时长，当前时长）
+ - (void)audioPlaying:(NSTimeInterval)totalTime time:(NSTimeInterval)currentTime
+ { }
+ 
+ /// 结束播放音频
+ - (void)audioPlayFinished
+ { }
 
 */
 
