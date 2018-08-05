@@ -78,7 +78,7 @@
 /// 停止播放
 - (void)playerStop
 {
-//   self.player seekToTime:<#(CMTime)#>
+
 }
 
 #pragma mark - getter
@@ -87,7 +87,6 @@
 {
     if (_player == nil) {
         _player = [[AVPlayer alloc] init];
-//        _player.volume = 1.0;
     }
     return _player;
 }

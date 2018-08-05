@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "SYAudio"
-  s.version      = "1.2.0"
+  s.version      = "1.2.1"
   s.summary      = "Easy to play or stop audio, and to record the radio."
   s.homepage     = "https://github.com/potato512/SYAudio"
   s.license      = { :type => "MIT", :file => "LICENSE" }

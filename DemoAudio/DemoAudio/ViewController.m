@@ -131,6 +131,7 @@
 
 #pragma mark - 交互 
 
+// 播放操作
 - (void)buttonClick:(UIButton *)button
 {
     if (button.tag == 0) {
@@ -178,6 +179,7 @@
     }
 }
 
+// 录音时不监测音量
 - (void)hideButtonClick:(UIButton *)button
 {
     button.selected = !button.selected;
@@ -199,6 +201,7 @@
     }
 }
 
+// 录音时限制时长
 - (void)timeButtonClick:(UIButton *)button
 {
     self.isLimitTime = YES;
@@ -217,6 +220,7 @@
     }];
 }
 
+// 录音时监测音量
 - (void)recordStartButtonDown:(UIButton *)button
 {
     [SYAudio shareAudio].audioRecorder.monitorVoice = YES;
