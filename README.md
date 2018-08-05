@@ -18,6 +18,7 @@
   * 设置方法：https://blog.csdn.net/potato512/article/details/52595649
 * 播放网络音频文件时，http协议的适配
   * 在plist文件设置属性：`App Transport Security Settings`-`Allow Arbitrary Loads`-`YES`
+* 设置`Enable Bitcode`属性为NO
 
 
 # 使用示例
@@ -138,7 +139,7 @@ NSString *filePath = xxxxx;
 * 20180805
   * 版本号：1.2.1
   * 修改完善
-  
+
   * 版本号：1.2.0
   * 功能完善
 
