@@ -338,9 +338,4 @@
     [self recorderStopWhileError];
 }
 
-- (void)audioRecorderBeginInterruption:(AVAudioRecorder *)recorder
-{
-    [self recorderStopWhileError];
-}
-
 @end
